@@ -1,0 +1,2766 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SP 1.1 — Câncer de Pele | NCS 4 | AGES Med</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CSS VARIABLES & RESET
+   ============================================================ */
+:root {
+  --bg-primary: #07090f;
+  --bg-secondary: #0d1117;
+  --bg-card: #111827;
+  --bg-card-hover: #162032;
+  --border: rgba(100,180,255,0.12);
+  --border-bright: rgba(100,180,255,0.3);
+  --accent: #38bdf8;
+  --accent-glow: rgba(56,189,248,0.15);
+  --accent-2: #06d6a0;
+  --accent-3: #ff6b6b;
+  --accent-4: #ffd166;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+  --green: #22c55e;
+  --red: #ef4444;
+  --yellow: #eab308;
+  --purple: #a78bfa;
+  --sidebar-w: 280px;
+  --radius: 12px;
+  --transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+  --font-head: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+}
+.light-mode {
+  --bg-primary: #f0f4f8;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f8fafc;
+  --border: rgba(0,100,200,0.12);
+  --border-bright: rgba(0,100,200,0.3);
+  --accent: #0284c7;
+  --accent-glow: rgba(2,132,199,0.08);
+  --accent-2: #059669;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  background:var(--bg-primary);
+  color:var(--text-primary);
+  font-family:var(--font-body);
+  line-height:1.7;
+  overflow-x:hidden;
+  transition:var(--transition);
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg-primary)}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px;opacity:.6}
+
+/* ============================================================
+   TOP BAR
+   ============================================================ */
+#topbar{
+  position:fixed;top:0;left:0;right:0;height:56px;
+  background:rgba(7,9,15,0.92);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px 0 calc(var(--sidebar-w) + 20px);
+  z-index:200;
+  transition:var(--transition);
+}
+.light-mode #topbar{background:rgba(240,244,248,0.92)}
+#topbar-left{display:flex;align-items:center;gap:12px}
+#topbar-title{font-family:var(--font-head);font-size:.85rem;font-weight:700;letter-spacing:.05em;color:var(--accent);text-transform:uppercase}
+#search-box{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:8px;padding:6px 12px;
+  min-width:220px;
+  transition:var(--transition);
+}
+#search-box:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+#search-input{
+  background:transparent;border:none;outline:none;
+  color:var(--text-primary);font-family:var(--font-body);font-size:.85rem;
+  width:180px;
+}
+#search-input::placeholder{color:var(--text-muted)}
+.topbar-actions{display:flex;align-items:center;gap:8px}
+.icon-btn{
+  background:var(--bg-card);border:1px solid var(--border);
+  color:var(--text-secondary);border-radius:8px;
+  width:36px;height:36px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;transition:var(--transition);
+}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-glow)}
+#progress-container{
+  display:flex;align-items:center;gap:8px;
+  font-size:.78rem;color:var(--text-secondary);
+}
+#progress-bar{
+  width:100px;height:6px;background:var(--bg-card);
+  border-radius:3px;overflow:hidden;border:1px solid var(--border);
+}
+#progress-fill{
+  height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  border-radius:3px;width:0%;transition:width .5s ease;
+}
+#score-display{
+  font-size:.78rem;color:var(--accent);font-family:var(--font-mono);
+  background:var(--accent-glow);border:1px solid var(--border-bright);
+  padding:3px 8px;border-radius:6px;
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+#sidebar{
+  position:fixed;top:0;left:0;
+  width:var(--sidebar-w);height:100vh;
+  background:var(--bg-secondary);
+  border-right:1px solid var(--border);
+  overflow-y:auto;z-index:150;
+  padding-top:56px;
+  transition:transform .3s ease;
+}
+#sidebar-logo{
+  padding:20px 16px 12px;
+  border-bottom:1px solid var(--border);
+}
+#sidebar-logo-title{
+  font-family:var(--font-head);font-size:1rem;font-weight:800;
+  color:var(--accent);letter-spacing:.03em;
+  line-height:1.2;
+}
+#sidebar-logo-sub{
+  font-size:.72rem;color:var(--text-muted);margin-top:2px;
+  text-transform:uppercase;letter-spacing:.08em;
+}
+.sidebar-section{border-bottom:1px solid var(--border)}
+.sidebar-section-title{
+  padding:10px 16px;font-size:.72rem;
+  font-weight:700;color:var(--text-muted);
+  text-transform:uppercase;letter-spacing:.1em;
+  cursor:pointer;display:flex;justify-content:space-between;align-items:center;
+  transition:var(--transition);
+}
+.sidebar-section-title:hover{color:var(--accent);background:var(--accent-glow)}
+.sidebar-section-title .chevron{transition:transform .25s;font-size:.7rem}
+.sidebar-section-title.open .chevron{transform:rotate(90deg)}
+.sidebar-links{display:none;padding:4px 0}
+.sidebar-links.open{display:block}
+.sidebar-link{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 16px 7px 24px;
+  font-size:.8rem;color:var(--text-secondary);
+  text-decoration:none;cursor:pointer;
+  transition:var(--transition);
+  border-left:2px solid transparent;
+  position:relative;
+}
+.sidebar-link:hover,.sidebar-link.active{
+  color:var(--accent);
+  border-left-color:var(--accent);
+  background:var(--accent-glow);
+}
+.sidebar-link .badge{
+  margin-left:auto;font-size:.65rem;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:4px;padding:1px 5px;
+  color:var(--text-muted);font-family:var(--font-mono);
+}
+.sidebar-link .done-mark{color:var(--green);font-size:.75rem;margin-left:auto}
+.sidebar-link .star-mark{color:var(--yellow);font-size:.75rem;margin-left:auto}
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+#main{
+  margin-left:var(--sidebar-w);
+  padding-top:72px;
+  min-height:100vh;
+  padding-bottom:60px;
+}
+.content-section{
+  max-width:880px;margin:0 auto;
+  padding:0 32px;
+}
+
+/* ============================================================
+   HERO / PAGE HEADER
+   ============================================================ */
+.page-hero{
+  padding:48px 32px 40px;
+  max-width:880px;margin:0 auto;
+  position:relative;
+  overflow:hidden;
+}
+.page-hero::before{
+  content:'';position:absolute;top:-60px;right:-80px;
+  width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(56,189,248,.08),transparent 70%);
+  pointer-events:none;
+}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--accent-glow);border:1px solid var(--border-bright);
+  color:var(--accent);font-size:.75rem;font-weight:600;
+  padding:4px 12px;border-radius:20px;
+  text-transform:uppercase;letter-spacing:.08em;
+  margin-bottom:16px;
+  font-family:var(--font-head);
+}
+.hero-tag::before{content:'◈';font-size:.6rem}
+.page-hero h1{
+  font-family:var(--font-head);
+  font-size:2.6rem;font-weight:800;
+  line-height:1.1;
+  background:linear-gradient(135deg,var(--text-primary) 0%,var(--accent) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:12px;
+}
+.hero-desc{
+  color:var(--text-secondary);font-size:.95rem;
+  max-width:560px;line-height:1.6;
+}
+.hero-stats{
+  display:flex;gap:24px;margin-top:24px;flex-wrap:wrap;
+}
+.hero-stat{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:10px;padding:12px 16px;min-width:120px;
+  transition:var(--transition);
+}
+.hero-stat:hover{border-color:var(--accent);transform:translateY(-2px)}
+.hero-stat-num{
+  font-family:var(--font-head);font-size:1.6rem;font-weight:800;
+  color:var(--accent);display:block;
+}
+.hero-stat-label{font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em}
+
+/* ============================================================
+   SECTION HEADERS
+   ============================================================ */
+.section-header{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:24px;padding-bottom:12px;
+  border-bottom:1px solid var(--border);
+}
+.section-num{
+  font-family:var(--font-mono);font-size:.72rem;
+  color:var(--accent);background:var(--accent-glow);
+  border:1px solid var(--border-bright);
+  padding:3px 8px;border-radius:6px;
+  letter-spacing:.05em;
+}
+.section-header h2{
+  font-family:var(--font-head);font-size:1.5rem;font-weight:700;
+  color:var(--text-primary);
+}
+.section-icon{font-size:1.2rem}
+
+/* ============================================================
+   CONTENT BLOCK
+   ============================================================ */
+.content-block{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:24px;
+  margin-bottom:20px;
+  position:relative;
+  overflow:hidden;
+  transition:var(--transition);
+}
+.content-block:hover{
+  border-color:var(--border-bright);
+  box-shadow:0 4px 24px rgba(56,189,248,.05);
+}
+.content-block::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.content-block:hover::before{opacity:1}
+.content-block h3{
+  font-family:var(--font-head);font-size:1.1rem;font-weight:700;
+  color:var(--accent);margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.content-block h3 .num{
+  font-size:.7rem;color:var(--text-muted);font-family:var(--font-mono);
+  background:var(--bg-secondary);border:1px solid var(--border);
+  padding:2px 6px;border-radius:4px;
+}
+.content-block p{color:var(--text-secondary);font-size:.92rem;margin-bottom:10px}
+.content-block p:last-child{margin-bottom:0}
+.content-block ul,.content-block ol{
+  padding-left:20px;color:var(--text-secondary);font-size:.92rem;
+}
+.content-block li{margin-bottom:6px}
+.content-block strong{color:var(--text-primary);font-weight:600}
+
+/* ============================================================
+   SPECIAL CALLOUT BOXES
+   ============================================================ */
+.callout{
+  border-radius:10px;padding:14px 16px;
+  margin:16px 0;font-size:.88rem;
+  border-left:3px solid;
+  display:flex;gap:10px;align-items:flex-start;
+}
+.callout-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px}
+.callout-body strong{display:block;font-size:.82rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.callout.key{background:rgba(56,189,248,.06);border-color:var(--accent);color:var(--text-secondary)}
+.callout.key .callout-body strong{color:var(--accent)}
+.callout.clinical{background:rgba(6,214,160,.06);border-color:var(--accent-2);color:var(--text-secondary)}
+.callout.clinical .callout-body strong{color:var(--accent-2)}
+.callout.warning{background:rgba(234,179,8,.06);border-color:var(--yellow);color:var(--text-secondary)}
+.callout.warning .callout-body strong{color:var(--yellow)}
+.callout.tip{background:rgba(167,139,250,.06);border-color:var(--purple);color:var(--text-secondary)}
+.callout.tip .callout-body strong{color:var(--purple)}
+.callout.danger{background:rgba(239,68,68,.06);border-color:var(--red);color:var(--text-secondary)}
+.callout.danger .callout-body strong{color:var(--red)}
+
+/* ============================================================
+   TABLES
+   ============================================================ */
+.table-wrap{overflow-x:auto;margin:16px 0}
+table{
+  width:100%;border-collapse:collapse;
+  font-size:.85rem;
+}
+thead th{
+  background:rgba(56,189,248,.1);
+  color:var(--accent);
+  font-family:var(--font-head);font-size:.8rem;
+  font-weight:700;letter-spacing:.04em;
+  padding:10px 14px;text-align:left;
+  border-bottom:2px solid var(--border-bright);
+}
+tbody td{
+  padding:10px 14px;
+  border-bottom:1px solid var(--border);
+  color:var(--text-secondary);
+  transition:var(--transition);
+}
+tbody tr:hover td{background:var(--accent-glow);color:var(--text-primary)}
+tbody tr:last-child td{border-bottom:none}
+
+/* ============================================================
+   EXPAND / COLLAPSE
+   ============================================================ */
+.expandable{margin:12px 0}
+.expand-trigger{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg-secondary);border:1px solid var(--border);
+  border-radius:8px;padding:10px 14px;
+  cursor:pointer;transition:var(--transition);
+  font-size:.85rem;font-weight:600;color:var(--text-secondary);
+  font-family:var(--font-head);
+}
+.expand-trigger:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-glow)}
+.expand-trigger .chevron{transition:transform .25s;font-size:.7rem}
+.expand-trigger.open .chevron{transform:rotate(180deg)}
+.expand-content{
+  display:none;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-top:none;
+  border-radius:0 0 8px 8px;
+  padding:16px;
+  font-size:.88rem;color:var(--text-secondary);
+  animation:slideDown .2s ease;
+}
+.expand-content.open{display:block}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ============================================================
+   QUIZ / QUESTIONS
+   ============================================================ */
+.quiz-container{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);margin-bottom:20px;
+  overflow:hidden;
+  transition:var(--transition);
+}
+.quiz-container:hover{border-color:var(--border-bright)}
+.quiz-header{
+  padding:16px 20px;
+  background:linear-gradient(90deg,rgba(56,189,248,.07),transparent);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-start;gap:12px;
+}
+.quiz-num{
+  font-family:var(--font-mono);font-size:.72rem;
+  background:var(--accent);color:#000;
+  padding:3px 8px;border-radius:5px;font-weight:700;
+  flex-shrink:0;margin-top:2px;
+}
+.quiz-question{font-size:.95rem;font-weight:500;color:var(--text-primary);line-height:1.5}
+.quiz-body{padding:16px 20px}
+.quiz-options{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.quiz-option{
+  display:flex;align-items:flex-start;gap:10px;
+  background:var(--bg-secondary);border:1px solid var(--border);
+  border-radius:8px;padding:10px 14px;cursor:pointer;
+  font-size:.88rem;color:var(--text-secondary);
+  transition:var(--transition);
+  user-select:none;
+}
+.quiz-option:hover{
+  border-color:var(--accent);color:var(--text-primary);
+  background:var(--accent-glow);
+}
+.quiz-option .opt-letter{
+  font-family:var(--font-mono);font-size:.75rem;
+  background:var(--bg-card);border:1px solid var(--border);
+  padding:2px 6px;border-radius:4px;flex-shrink:0;
+  margin-top:1px;font-weight:600;
+}
+.quiz-option.correct{
+  border-color:var(--green)!important;
+  background:rgba(34,197,94,.1)!important;
+  color:var(--green)!important;
+}
+.quiz-option.correct .opt-letter{background:var(--green);color:#000;border-color:var(--green)}
+.quiz-option.wrong{
+  border-color:var(--red)!important;
+  background:rgba(239,68,68,.1)!important;
+  color:var(--red)!important;
+}
+.quiz-option.wrong .opt-letter{background:var(--red);color:#fff;border-color:var(--red)}
+.quiz-option.disabled{pointer-events:none;opacity:.6}
+.quiz-explanation{
+  display:none;
+  background:rgba(56,189,248,.05);
+  border:1px solid var(--border-bright);
+  border-radius:8px;padding:12px 14px;
+  font-size:.85rem;color:var(--text-secondary);
+  line-height:1.6;
+  animation:slideDown .2s ease;
+}
+.quiz-explanation.show{display:block}
+.quiz-explanation strong{color:var(--accent-2)}
+.quiz-explanation .exp-label{
+  font-family:var(--font-head);font-size:.75rem;font-weight:700;
+  color:var(--accent);text-transform:uppercase;letter-spacing:.06em;
+  margin-bottom:6px;display:flex;align-items:center;gap:6px;
+}
+.quiz-actions{
+  display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;
+}
+.btn{
+  padding:7px 14px;border-radius:7px;
+  font-size:.8rem;font-weight:600;cursor:pointer;
+  font-family:var(--font-head);letter-spacing:.03em;
+  border:1px solid;transition:var(--transition);
+  display:inline-flex;align-items:center;gap:5px;
+}
+.btn-outline{
+  background:transparent;
+  border-color:var(--border-bright);color:var(--text-secondary);
+}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-glow)}
+.btn-accent{
+  background:var(--accent);border-color:var(--accent);color:#000;font-weight:700;
+}
+.btn-accent:hover{background:rgba(56,189,248,.8)}
+.btn-green{background:rgba(34,197,94,.15);border-color:var(--green);color:var(--green)}
+.btn-green:hover{background:rgba(34,197,94,.25)}
+.btn-red{background:rgba(239,68,68,.1);border-color:var(--red);color:var(--red)}
+.quiz-result{
+  display:none;font-size:.82rem;padding:6px 10px;
+  border-radius:6px;font-weight:600;align-items:center;gap:5px;
+}
+.quiz-result.show{display:flex}
+.quiz-result.pass{background:rgba(34,197,94,.1);color:var(--green);border:1px solid var(--green)}
+.quiz-result.fail{background:rgba(239,68,68,.1);color:var(--red);border:1px solid var(--red)}
+
+/* ============================================================
+   FLASHCARDS
+   ============================================================ */
+#flashcard-section{margin-top:40px}
+.flashcard-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:16px}
+.flashcard{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);
+  height:180px;cursor:pointer;
+  perspective:800px;position:relative;
+  transition:var(--transition);
+}
+.flashcard:hover{border-color:var(--accent);box-shadow:0 0 20px var(--accent-glow)}
+.flashcard-inner{
+  position:relative;width:100%;height:100%;
+  transition:transform .5s cubic-bezier(.4,0,.2,1);
+  transform-style:preserve-3d;
+}
+.flashcard.flipped .flashcard-inner{transform:rotateY(180deg)}
+.flashcard-front,.flashcard-back{
+  position:absolute;inset:0;
+  -webkit-backface-visibility:hidden;backface-visibility:hidden;
+  border-radius:var(--radius);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:20px;text-align:center;
+}
+.flashcard-front{
+  background:linear-gradient(135deg,var(--bg-card),var(--bg-secondary));
+}
+.flashcard-back{
+  background:linear-gradient(135deg,rgba(56,189,248,.08),var(--bg-card));
+  transform:rotateY(180deg);
+}
+.fc-tag{
+  font-size:.65rem;font-family:var(--font-mono);
+  color:var(--accent);text-transform:uppercase;letter-spacing:.1em;
+  margin-bottom:8px;
+}
+.fc-question{font-size:.85rem;font-weight:600;color:var(--text-primary);line-height:1.4}
+.fc-answer{font-size:.82rem;color:var(--text-secondary);line-height:1.5}
+.fc-flip-hint{
+  font-size:.65rem;color:var(--text-muted);
+  position:absolute;bottom:10px;right:12px;
+}
+.flashcard-controls{
+  display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap;
+}
+
+/* ============================================================
+   ABCDE VISUAL SYSTEM
+   ============================================================ */
+.abcde-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:12px;margin:16px 0;
+}
+.abcde-card{
+  background:var(--bg-secondary);border:1px solid var(--border);
+  border-radius:10px;padding:16px;text-align:center;
+  transition:var(--transition);cursor:default;
+  position:relative;overflow:hidden;
+}
+.abcde-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:var(--accent);transform:scaleX(0);transition:transform .3s;
+}
+.abcde-card:hover{border-color:var(--accent);transform:translateY(-3px)}
+.abcde-card:hover::after{transform:scaleX(1)}
+.abcde-letter{
+  font-family:var(--font-head);font-size:2.2rem;font-weight:800;
+  color:var(--accent);display:block;line-height:1;margin-bottom:8px;
+}
+.abcde-name{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:4px}
+.abcde-desc{font-size:.78rem;color:var(--text-muted);line-height:1.4}
+
+/* ============================================================
+   BRESLOW TABLE VISUAL
+   ============================================================ */
+.breslow-visual{display:flex;flex-direction:column;gap:8px;margin:16px 0}
+.breslow-row{
+  display:flex;align-items:center;gap:12px;
+  background:var(--bg-secondary);border:1px solid var(--border);
+  border-radius:8px;padding:10px 14px;
+  transition:var(--transition);
+}
+.breslow-row:hover{border-color:var(--accent)}
+.breslow-depth{
+  font-family:var(--font-mono);font-size:.8rem;
+  color:var(--accent);font-weight:600;min-width:80px;
+}
+.breslow-bar-wrap{flex:1;height:8px;background:var(--bg-card);border-radius:4px;overflow:hidden}
+.breslow-bar{height:100%;border-radius:4px;transition:width 1s ease}
+.breslow-bar.low{background:var(--green);width:30%}
+.breslow-bar.med{background:var(--yellow);width:60%}
+.breslow-bar.high{background:var(--red);width:100%}
+.breslow-info{font-size:.78rem;color:var(--text-secondary);min-width:100px;text-align:right}
+
+/* ============================================================
+   PROGRESS & MARKS
+   ============================================================ */
+.section-controls{
+  display:flex;gap:8px;margin-top:16px;
+  justify-content:flex-end;flex-wrap:wrap;
+}
+.btn-mark{
+  background:transparent;border:1px solid var(--border);
+  color:var(--text-muted);border-radius:7px;padding:5px 12px;
+  font-size:.75rem;cursor:pointer;transition:var(--transition);
+  font-family:var(--font-head);
+  display:flex;align-items:center;gap:5px;
+}
+.btn-mark:hover{border-color:var(--accent);color:var(--accent)}
+.btn-mark.marked-done{border-color:var(--green);color:var(--green);background:rgba(34,197,94,.1)}
+.btn-mark.marked-star{border-color:var(--yellow);color:var(--yellow);background:rgba(234,179,8,.1)}
+
+/* ============================================================
+   CONCEPT PILLS
+   ============================================================ */
+.pill-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.pill{
+  background:var(--bg-secondary);border:1px solid var(--border);
+  border-radius:20px;padding:4px 12px;font-size:.78rem;
+  color:var(--text-secondary);transition:var(--transition);cursor:default;
+}
+.pill:hover{border-color:var(--accent);color:var(--accent)}
+.pill.accent{background:var(--accent-glow);border-color:var(--border-bright);color:var(--accent)}
+.pill.green{background:rgba(34,197,94,.08);border-color:var(--green);color:var(--green)}
+.pill.red{background:rgba(239,68,68,.08);border-color:var(--red);color:var(--red)}
+.pill.yellow{background:rgba(234,179,8,.08);border-color:var(--yellow);color:var(--yellow)}
+
+/* ============================================================
+   MINI MIND MAP
+   ============================================================ */
+.mind-map{
+  background:var(--bg-secondary);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px;
+  text-align:center;margin:16px 0;
+  font-size:.82rem;
+}
+.mm-center{
+  display:inline-block;
+  background:var(--accent);color:#000;
+  font-family:var(--font-head);font-weight:700;font-size:.85rem;
+  padding:8px 16px;border-radius:20px;margin-bottom:16px;
+}
+.mm-branches{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:8px;
+}
+.mm-branch{
+  background:var(--bg-card);border:1px solid var(--border-bright);
+  border-radius:8px;padding:6px 12px;
+  color:var(--text-secondary);font-size:.78rem;
+  position:relative;
+}
+.mm-branch::before{
+  content:'';
+  display:block;width:1px;height:12px;background:var(--border-bright);
+  margin:0 auto 4px;
+}
+
+/* ============================================================
+   TOOLTIP
+   ============================================================ */
+[data-tooltip]{position:relative;cursor:help}
+[data-tooltip]::after{
+  content:attr(data-tooltip);
+  position:absolute;bottom:calc(100% + 6px);left:50%;
+  transform:translateX(-50%);
+  background:var(--bg-card);border:1px solid var(--border-bright);
+  color:var(--text-primary);font-size:.75rem;
+  padding:6px 10px;border-radius:7px;
+  white-space:nowrap;pointer-events:none;
+  opacity:0;transition:opacity .2s;
+  box-shadow:0 4px 20px rgba(0,0,0,.4);
+  z-index:999;max-width:240px;white-space:normal;text-align:center;
+}
+[data-tooltip]:hover::after{opacity:1}
+
+/* ============================================================
+   SEARCH RESULTS HIGHLIGHT
+   ============================================================ */
+.highlight{
+  background:rgba(234,179,8,.3);color:var(--text-primary);
+  border-radius:3px;padding:0 2px;
+}
+.search-hidden{display:none!important}
+
+/* ============================================================
+   STATS BAR
+   ============================================================ */
+#stats-bar{
+  position:fixed;bottom:0;left:var(--sidebar-w);right:0;
+  background:rgba(7,9,15,.9);backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+  padding:6px 24px;z-index:100;
+  display:flex;align-items:center;gap:16px;
+  font-size:.75rem;color:var(--text-muted);
+}
+.light-mode #stats-bar{background:rgba(240,244,248,.9)}
+.stat-item{display:flex;align-items:center;gap:5px}
+.stat-dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.stat-dot.green{background:var(--green)}
+.stat-dot.red{background:var(--red)}
+
+/* ============================================================
+   MOBILE TOGGLE
+   ============================================================ */
+#sidebar-toggle{
+  display:none;position:fixed;bottom:20px;right:20px;
+  width:48px;height:48px;border-radius:50%;
+  background:var(--accent);border:none;color:#000;
+  font-size:1.2rem;cursor:pointer;z-index:300;
+  box-shadow:0 4px 20px rgba(56,189,248,.4);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:900px){
+  #sidebar{transform:translateX(-100%)}
+  #sidebar.open{transform:translateX(0)}
+  #main{margin-left:0}
+  #topbar{padding-left:20px}
+  #stats-bar{left:0}
+  #sidebar-toggle{display:flex;align-items:center;justify-content:center}
+  .content-section{padding:0 16px}
+  .page-hero{padding:32px 16px}
+  .page-hero h1{font-size:1.8rem}
+  #search-box{display:none}
+}
+@media (max-width:600px){
+  .abcde-grid{grid-template-columns:repeat(2,1fr)}
+  .flashcard-grid{grid-template-columns:1fr}
+  .hero-stats{gap:12px}
+}
+
+/* ============================================================
+   UTILITY
+   ============================================================ */
+.sep{height:40px}
+.small-sep{height:20px}
+.fade-in{animation:fadeIn .4s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.stagger-1{animation-delay:.1s}
+.stagger-2{animation-delay:.2s}
+.stagger-3{animation-delay:.3s}
+code{
+  font-family:var(--font-mono);font-size:.82em;
+  background:var(--bg-secondary);border:1px solid var(--border);
+  padding:2px 5px;border-radius:4px;color:var(--accent);
+}
+hr{border:none;border-top:1px solid var(--border);margin:24px 0}
+.text-accent{color:var(--accent)}
+.text-green{color:var(--green)}
+.text-red{color:var(--red)}
+.text-yellow{color:var(--yellow)}
+.text-muted{color:var(--text-muted)}
+.block-title{
+  font-family:var(--font-head);font-size:.75rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.08em;
+  color:var(--text-muted);margin-bottom:10px;
+  display:flex;align-items:center;gap:6px;
+}
+.block-title::before{content:'';width:12px;height:2px;background:var(--accent);border-radius:1px}
+
+/* Review mode */
+#review-overlay{
+  display:none;position:fixed;inset:0;z-index:500;
+  background:var(--bg-primary);overflow-y:auto;
+  padding:40px 20px;
+}
+#review-overlay.active{display:block}
+.review-close{
+  position:fixed;top:16px;right:20px;
+  background:var(--bg-card);border:1px solid var(--border);
+  color:var(--text-secondary);border-radius:8px;
+  padding:8px 16px;cursor:pointer;font-family:var(--font-head);font-size:.85rem;
+  transition:var(--transition);
+}
+.review-close:hover{border-color:var(--red);color:var(--red)}
+
+/* Section separator visual */
+.section-divider{
+  margin:48px auto;
+  max-width:880px;padding:0 32px;
+}
+.section-divider hr{
+  border:none;
+  border-top:1px solid var(--border);
+  position:relative;
+}
+.section-divider hr::after{
+  content:'◈';
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  background:var(--bg-primary);
+  color:var(--accent);padding:0 8px;font-size:.7rem;
+}
+</style>
+</head>
+<body>
+
+<!-- ================================================================
+     TOP BAR
+     ================================================================ -->
+<div id="topbar">
+  <div id="topbar-left">
+    <span id="topbar-title">SP 1.1 — Câncer de Pele</span>
+    <div id="search-box">
+      <span style="color:var(--text-muted);font-size:.85rem">⌕</span>
+      <input type="text" id="search-input" placeholder="Buscar no conteúdo…" autocomplete="off">
+      <kbd style="font-size:.65rem;color:var(--text-muted);border:1px solid var(--border);padding:1px 4px;border-radius:3px">ESC</kbd>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <div id="progress-container">
+      <span>Progresso</span>
+      <div id="progress-bar"><div id="progress-fill"></div></div>
+      <span id="progress-pct">0%</span>
+    </div>
+    <div id="score-display">0 / 0 ✓</div>
+    <button class="icon-btn" onclick="toggleReview()" title="Modo Revisão Rápida">⚡</button>
+    <button class="icon-btn" onclick="toggleAll()" title="Expandir/Recolher tudo">⊞</button>
+    <button class="icon-btn" onclick="toggleTheme()" id="theme-btn" title="Alternar tema">◐</button>
+  </div>
+</div>
+
+<!-- ================================================================
+     SIDEBAR
+     ================================================================ -->
+<nav id="sidebar">
+  <div id="sidebar-logo">
+    <div id="sidebar-logo-title">Câncer de Pele</div>
+    <div id="sidebar-logo-sub">NCS 4 · SP 1.1 · AGES Med</div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title open" onclick="toggleSidebarSection(this)">Vocabulário <span class="chevron">▶</span></div>
+    <div class="sidebar-links open">
+      <a class="sidebar-link" onclick="scrollTo('vocab')">📖 Palavras-Chave</a>
+      <a class="sidebar-link" onclick="scrollTo('abcde')">◈ Sistema ABCDE</a>
+      <a class="sidebar-link" onclick="scrollTo('dermatoscopia')">🔬 Dermatoscopia</a>
+      <a class="sidebar-link" onclick="scrollTo('fitzpatrick')">🎨 Escala Fitzpatrick</a>
+      <a class="sidebar-link" onclick="scrollTo('vasos')">🩸 Vasos Arboriformes</a>
+      <a class="sidebar-link" onclick="scrollTo('sentinela')">🏰 Linfonodo Sentinela</a>
+      <a class="sidebar-link" onclick="scrollTo('breslow')">📏 Índice de Breslow</a>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title open" onclick="toggleSidebarSection(this)">Conteúdo <span class="chevron">▶</span></div>
+    <div class="sidebar-links open">
+      <a class="sidebar-link" onclick="scrollTo('ciclo-celular')">🔄 Ciclo Celular</a>
+      <a class="sidebar-link" onclick="scrollTo('mitose-meiose')">⚙️ Mitose e Meiose</a>
+      <a class="sidebar-link" onclick="scrollTo('cancer-dna')">🧬 Câncer e DNA</a>
+      <a class="sidebar-link" onclick="scrollTo('p53')">🛡️ Proteína p53</a>
+      <a class="sidebar-link" onclick="scrollTo('neoplasias')">🔬 Neoplasias Cutâneas</a>
+      <a class="sidebar-link" onclick="scrollTo('fatores')">⚠️ Fatores de Risco</a>
+      <a class="sidebar-link" onclick="scrollTo('fisiopato')">🩻 Fisiopatologia</a>
+      <a class="sidebar-link" onclick="scrollTo('diagnostico')">🩺 Diagnóstico</a>
+      <a class="sidebar-link" onclick="scrollTo('tratamento')">💊 Tratamento</a>
+      <a class="sidebar-link" onclick="scrollTo('epidemio')">📊 Epidemiologia</a>
+      <a class="sidebar-link" onclick="scrollTo('followup')">📋 Follow-up</a>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title open" onclick="toggleSidebarSection(this)">Questões <span class="chevron">▶</span></div>
+    <div class="sidebar-links open">
+      <a class="sidebar-link" onclick="scrollTo('questoes')">📝 40 Questões <span class="badge" id="badge-q">0/40</span></a>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title open" onclick="toggleSidebarSection(this)">Ferramentas <span class="chevron">▶</span></div>
+    <div class="sidebar-links open">
+      <a class="sidebar-link" onclick="scrollTo('flashcards')">🃏 Flashcards</a>
+      <a class="sidebar-link" onclick="scrollTo('tabelas')">📊 Tabelas-Resumo</a>
+      <a class="sidebar-link" onclick="toggleReview()">⚡ Revisão Rápida</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ================================================================
+     MAIN CONTENT
+     ================================================================ -->
+<main id="main">
+
+<!-- HERO -->
+<div class="page-hero fade-in">
+  <div class="hero-tag">Módulo NCS 4 · Situação-Problema 1.1</div>
+  <h1>Câncer de Pele</h1>
+  <p class="hero-desc">Guia completo integrado: vocabulário clínico, ciclo celular, oncogênese, diagnóstico, tratamento e epidemiologia do câncer de pele com foco em provas médicas.</p>
+  <div class="hero-stats">
+    <div class="hero-stat fade-in stagger-1">
+      <span class="hero-stat-num">11</span>
+      <span class="hero-stat-label">Termos-chave</span>
+    </div>
+    <div class="hero-stat fade-in stagger-2">
+      <span class="hero-stat-num">9</span>
+      <span class="hero-stat-label">Tópicos</span>
+    </div>
+    <div class="hero-stat fade-in stagger-3">
+      <span class="hero-stat-num">40</span>
+      <span class="hero-stat-label">Questões</span>
+    </div>
+    <div class="hero-stat fade-in stagger-3">
+      <span class="hero-stat-num" id="hero-completed">0</span>
+      <span class="hero-stat-label">Concluídos</span>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     SECTION 1 — VOCABULÁRIO
+     ================================================================ -->
+<div class="content-section fade-in" id="vocab">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <span class="section-icon">📖</span>
+    <h2>Palavras Desconhecidas</h2>
+  </div>
+
+  <!-- ABCDE -->
+  <div id="abcde" class="content-block">
+    <h3><span class="num">1</span> Sistema ABCDE</h3>
+    <p>Guia prático e visual utilizado para identificar sinais e pintas (nevos) que podem ser suspeitos de <strong>melanoma</strong>. Cada letra refere-se a uma característica morfológica da lesão.</p>
+
+    <div class="abcde-grid">
+      <div class="abcde-card" data-tooltip="Uma metade da lesão é diferente da outra em forma ou tamanho">
+        <span class="abcde-letter">A</span>
+        <div class="abcde-name">Assimetria</div>
+        <div class="abcde-desc">Uma metade diferente da outra</div>
+      </div>
+      <div class="abcde-card" data-tooltip="Bordas irregulares, serrilhadas ou imprecisas — suspeito de crescimento invasivo">
+        <span class="abcde-letter" style="color:var(--accent-2)">B</span>
+        <div class="abcde-name">Bordas</div>
+        <div class="abcde-desc">Irregulares, serrilhadas ou imprecisas</div>
+      </div>
+      <div class="abcde-card" data-tooltip="Policromia: preto, marrom, cinza, azul ou vermelho na mesma lesão">
+        <span class="abcde-letter" style="color:var(--purple)">C</span>
+        <div class="abcde-name">Cor</div>
+        <div class="abcde-desc">Várias cores ou tons diferentes</div>
+      </div>
+      <div class="abcde-card" data-tooltip="Lesões > 6mm merecem atenção, mas melanomas podem ser menores">
+        <span class="abcde-letter" style="color:var(--yellow)">D</span>
+        <div class="abcde-name">Diâmetro</div>
+        <div class="abcde-desc">Geralmente maior que 6 mm</div>
+      </div>
+      <div class="abcde-card" data-tooltip="Qualquer mudança recente em tamanho, cor, forma ou sintomas">
+        <span class="abcde-letter" style="color:var(--red)">E</span>
+        <div class="abcde-name">Evolução</div>
+        <div class="abcde-desc">Crescimento ou mudança recente</div>
+      </div>
+    </div>
+
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-body">
+        <strong>Erro Clássico de Prova</strong>
+        O critério "D" original era "Diâmetro > 6mm", mas melanomas precoces podem ser menores. Versões atualizadas incluem o "E" de Evolução como critério mais sensível. Algumas bancas cobram "E" de Elevação — confira o enunciado.
+      </div>
+    </div>
+
+    <div class="callout key">
+      <span class="callout-icon">🧠</span>
+      <div class="callout-body">
+        <strong>Pontos-chave para Prova</strong>
+        ABCDE = triagem clínica para melanoma. A dermatoscopia aumenta a acurácia. Qualquer critério positivo indica avaliação especializada.
+      </div>
+    </div>
+
+    <div class="section-controls">
+      <button class="btn-mark" onclick="markDone(this,'abcde')">✓ Concluído</button>
+      <button class="btn-mark" onclick="markStar(this,'abcde')">★ Importante</button>
+    </div>
+  </div>
+
+  <!-- DERMATOSCOPIA -->
+  <div id="dermatoscopia" class="content-block">
+    <h3><span class="num">2</span> Dermatoscopia</h3>
+    <p>Método de exame <strong>não invasivo</strong> realizado com o dermatoscópio — instrumento que combina luz de alta intensidade com lentes de aumento. Permite visualizar estruturas na epiderme e derme invisíveis ao olho nu.</p>
+
+    <div class="pill-row">
+      <span class="pill accent">Não invasivo</span>
+      <span class="pill green">Aumenta acurácia diagnóstica</span>
+      <span class="pill">Epiderme + Derme papilar</span>
+      <span class="pill">Luz + Ampliação 10-30x</span>
+    </div>
+
+    <div class="callout clinical">
+      <span class="callout-icon">🔬</span>
+      <div class="callout-body">
+        <strong>Correlação Clínica</strong>
+        A dermatoscopia é superior à inspeção visual simples, aumentando a sensibilidade de ~71% para ~89% no diagnóstico de melanoma. É o passo entre o exame clínico e a biópsia.
+      </div>
+    </div>
+
+    <div class="section-controls">
+      <button class="btn-mark" onclick="markDone(this,'dermatoscopia')">✓ Concluído</button>
+      <button class="btn-mark" onclick="markStar(this,'dermatoscopia')">★ Importante</button>
+    </div>
+  </div>
+
+  <!-- FITZPATRICK -->
+  <div id="fitzpatrick" class="content-block">
+    <h3><span class="num">3</span> Fototipo II — Escala de Fitzpatrick</h3>
+    <p>Classificação da pele baseada na sua reação à exposição solar. O Fototipo II refere-se a indivíduos de <strong>pele clara que queimam com facilidade e bronzeiam pouco</strong>.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Fototipo</th><th>Características</th><th>Risco Oncológico</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>I</code></td><td>Muito clara, sempre queima, nunca bronzeia</td><td class="text-red">Muito alto</td></tr>
+          <tr><td><code>II</code></td><td>Clara, queima facilmente, bronzeia pouco</td><td class="text-red">Alto</td></tr>
+          <tr><td><code>III</code></td><td>Média, às vezes queima, bronzeia moderado</td><td class="text-yellow">Moderado</td></tr>
+          <tr><td><code>IV</code></td><td>Oleosa, raramente queima, bronzeia bem</td><td class="text-yellow">Baixo</td></tr>
+          <tr><td><code>V</code></td><td>Morena, muito raramente queima</td><td class="text-green">Muito baixo</td></tr>
+          <tr><td><code>VI</code></td><td>Negra, nunca queima</td><td class="text-green">Mínimo</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-body">
+        <strong>Atenção!</strong>
+        Fototipos I e II têm menor melanina → menor proteção contra UVB → maior risco de CBC, CEC e melanoma. CBC é mais comum em adultos caucasianos com fototipos baixos.
+      </div>
+    </div>
+
+    <div class="section-controls">
+      <button class="btn-mark" onclick="markDone(this,'fitzpatrick')">✓ Concluído</button>
+      <button class="btn-mark" onclick="markStar(this,'fitzpatrick')">★ Importante</button>
+    </div>
+  </div>
+
+  <!-- VASOS ARBORIFORMES -->
+  <div id="vasos" class="content-block">
+    <h3><span class="num">4</span> Vasos Arboriformes</h3>
+    <p>Telangiectasias (pequenos vasos sanguíneos dilatados) com aparência microscópica de <strong>"galhos de árvore"</strong>. Caracterizam-se por vasos centrais de maior calibre que se ramificam em capilares finos.</p>
+
+    <div class="callout key">
+      <span class="callout-icon">🧠</span>
+      <div class="callout-body">
+        <strong>Associação Fundamental</strong>
+        Vasos arboriformes = hallmark do <strong>Carcinoma Basocelular</strong> (especialmente nodular e morfeiforme). Visualizados à dermatoscopia na superfície do tumor perláceo.
+      </div>
+    </div>
+
+    <div class="section-controls">
+      <button class="btn-mark" onclick="markDone(this,'vasos')">✓ Concluído</button>
+      <button class="btn-mark" onclick="markStar(this,'vasos')">★ Importante</button>
+    </div>
+  </div>
+
+  <!-- LINFONODO SENTINELA -->
+  <div id="sentinela" class="content-block">
+    <h3><span class="num">5</span> Linfonodo Sentinela</h3>
+    <p>Primeiro linfonodo de uma cadeia linfática regional que recebe o fluxo de linfa vindo <strong>diretamente do tumor primário</strong>. Funciona como o principal ponto de triagem para metástase linfonodal.</p>
+
+    <div class="callout clinical">
+      <span class="callout-icon">🩺</span>
+      <div class="callout-body">
+        <strong>Aplicação Clínica</strong>
+        Em melanomas com espessura > 1mm (Breslow), realiza-se biópsia do linfonodo sentinela. Se negativo ("limpo"), os demais linfonodos provavelmente estão livres — evitando linfadenectomia desnecessária.
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <div class="callout-body">
+        <strong>Alusão Didática</strong>
+        O linfonodo sentinela é o "primeiro guarda" do castelo: se o invasor (célula cancerosa) não passou por ele, o interior (demais linfonodos) ainda está protegido.
+      </div>
+    </div>
+
+    <div class="section-controls">
+      <button class="btn-mark" onclick="markDone(this,'sentinela')">✓ Concluído</button>
+      <button class="btn-mark" onclick="markStar(this,'sentinela')">★ Importante</button>
+    </div>
+  </div>
+
+  <!-- CBC NODULAR -->
+  <div class="content-block">
+    <h3><span class="num">6</span> Carcinoma Basocelular Nodular</h3>
+    <p>Forma clínica mais comum do CBC, representando <strong>60–80% dos casos</strong>. Apresenta-se como pápula ou nódulo firme, brilhante e <strong>perláceo</strong>, com vasos arboriformes superficiais.</p>
+    <div class="pill-row">
+      <span class="pill accent">Mais comum: cabeça e pescoço</span>
+      <span class="pill green">Crescimento lento</span>
+      <span class="pill">Superfície brilhante perlácea</span>
+      <span class="pill yellow">Vasos arboriformes visíveis</span>
+    </div>
+    <div class="section-controls">
+      <button class="btn-mark" onclick="markDone(this,'cbc-nod')">✓ Concluído</button>
+      <button class="btn-mark" onclick="markStar(this,'cbc-nod')">★ Importante</button>
+    </div>
+  </div>
+
+  <!-- CIRURGIA DE MOHS -->
+  <div class="content-block">
+    <h3><span class="num">7</span> Cirurgia de Mohs</h3>
+    <p>Técnica cirúrgica micrográfica especializada para remoção de tumores de pele de alto risco ou localizados em áreas críticas (face). O cirurgião retira o tumor e examina <strong>100% das margens</strong> ao microscópio durante o procedimento.</p>
+    <div class="callout key">
+      <span class="callout-icon">🧠</span>
+      <div class="callout-body">
+        <strong>Diferencial da Mohs</strong>
+        Cirurgia convencional: margens avaliadas por amostragem. Mohs: 100% das margens em tempo real → menor recorrência + máxima preservação de tecido saudável.
+      </div>
+    </div>
+    <div class="section-controls">
+      <button class="btn-mark" onclick="markDone(this,'mohs')">✓ Concluído</button>
+      <button class="btn-mark" onclick="markStar(this,'mohs')">★ Importante</button>
+    </div>
+  </div>
+
+  <!-- BIÓPSIA -->
+  <div class="content-block">
+    <h3><span class="num">8</span> Biópsia Incisional vs Excisional</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Tipo</th><th>O que remove</th><th>Indicação</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Excisional</strong></td><td>Toda a lesão</td><td>Melanoma (≤5cm), permite Breslow completo</td></tr>
+          <tr><td><strong>Incisional</strong></td><td>Parte da lesão</td><td>Lesões grandes antes da certeza diagnóstica</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-body">
+        <strong>Erro Clássico</strong>
+        Biópsia incisional em melanoma pode subestimar o Índice de Breslow (não pega a parte mais profunda) → margem cirúrgica inadequada → risco de recorrência. Sempre preferir excisional para lesões suspeitas de melanoma.
+      </div>
+    </div>
+    <div class="section-controls">
+      <button class="btn-mark" onclick="markDone(this,'biopsia')">✓ Concluído</button>
+      <button class="btn-mark" onclick="markStar(this,'biopsia')">★ Importante</button>
+    </div>
+  </div>
+
+  <!-- ESTADIAMENTO TNM -->
+  <div class="content-block">
+    <h3><span class="num">9</span> Estadiamento TNM — T1b</h3>
+    <p><strong>T</strong> = tamanho/extensão do tumor primário | <strong>N</strong> = linfonodos regionais | <strong>M</strong> = metástases a distância</p>
+    <p>T1b = tumor pequeno e localizado, com subdivisão específica conforme o órgão (ex: pulmão T1b = IA2; próstata T1b = não palpável, >5% do tecido ressecado).</p>
+    <div class="section-controls">
+      <button class="btn-mark" onclick="markDone(this,'tnm')">✓ Concluído</button>
+      <button class="btn-mark" onclick="markStar(this,'tnm')">★ Importante</button>
+    </div>
+  </div>
+
+  <!-- BRESLOW -->
+  <div id="breslow" class="content-block">
+    <h3><span class="num">10</span> Índice de Breslow</h3>
+    <p>Medida em milímetros da <strong>profundidade de invasão</strong> do melanoma na pele. É o parâmetro mais importante para prognóstico e definição de margens cirúrgicas.</p>
+
+    <div class="breslow-visual">
+      <div class="breslow-row">
+        <span class="breslow-depth">≤ 1 mm</span>
+        <div class="breslow-bar-wrap"><div class="breslow-bar low"></div></div>
+        <span class="breslow-info text-green">Margem 1cm · Sentinela geralmente não</span>
+      </div>
+      <div class="breslow-row">
+        <span class="breslow-depth">1 – 2 mm</span>
+        <div class="breslow-bar-wrap"><div class="breslow-bar med"></div></div>
+        <span class="breslow-info text-yellow">Margem >1cm · Sentinela indicado</span>
+      </div>
+      <div class="breslow-row">
+        <span class="breslow-depth">> 2 mm</span>
+        <div class="breslow-bar-wrap"><div class="breslow-bar high"></div></div>
+        <span class="breslow-info text-red">Margem 2–3cm · Sentinela indicado</span>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <div class="callout-body">
+        <strong>Alusão Didática</strong>
+        Breslow = profundidade das raízes de uma erva-daninha. Raiz rasa → fácil de controlar. Raiz profunda → maior chance de se ter espalhado "por baixo da terra".
+      </div>
+    </div>
+    <div class="section-controls">
+      <button class="btn-mark" onclick="markDone(this,'breslow')">✓ Concluído</button>
+      <button class="btn-mark" onclick="markStar(this,'breslow')">★ Importante</button>
+    </div>
+  </div>
+
+  <!-- QUERATOSES ACTÍNICAS -->
+  <div class="content-block">
+    <h3><span class="num">11</span> Queratoses Actínicas</h3>
+    <p>Lesões pré-cancerígenas causadas por dano solar cumulativo. Manifestam-se como áreas ásperas, rugosas, com escamas amareladas ou acastanhadas em áreas fotoexpostas (rosto, dorso das mãos, couro cabeludo).</p>
+    <div class="callout warning">
+      <span class="callout-icon">🚦</span>
+      <div class="callout-body">
+        <strong>Sinal de Alerta</strong>
+        Queratose actínica = "luz amarela" na saúde da pele. É displasia em estágio inicial que pode evoluir para CEC invasivo se não tratada. Reversível em alguns casos com tratamento precoce.
+      </div>
+    </div>
+    <div class="section-controls">
+      <button class="btn-mark" onclick="markDone(this,'queratose')">✓ Concluído</button>
+      <button class="btn-mark" onclick="markStar(this,'queratose')">★ Importante</button>
+    </div>
+  </div>
+</div><!-- /vocab -->
+
+<!-- ================================================================
+     SECTION 2 — CICLO CELULAR
+     ================================================================ -->
+<div class="section-divider"><hr></div>
+<div class="content-section fade-in" id="ciclo-celular">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <span class="section-icon">🔄</span>
+    <h2>Ciclo Celular: Mitose e Meiose</h2>
+  </div>
+
+  <div class="callout key">
+    <span class="callout-icon">📌</span>
+    <div class="callout-body">
+      <strong>Resumo Ultra-Objetivo</strong>
+      O ciclo celular é uma sequência autorregulada que permite crescimento e reprodução. Fases: Interfase (G1 → S → G2) → Divisão (Mitose ou Meiose). Regulado por ciclinas, CDKs e proteínas guardiãs (p53, pRb).
+    </div>
+  </div>
+
+  <!-- INTERFASE -->
+  <div id="mitose-meiose" class="content-block">
+    <h3>A Interfase: Preparação (G1 → S → G2)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Fase</th><th>Evento Principal</th><th>Ponto de Controle</th></tr></thead>
+        <tbody>
+          <tr><td><strong>G1</strong></td><td>Crescimento, síntese proteica</td><td>Ponto de Restrição (G1/S) — mais crítico</td></tr>
+          <tr><td><strong>S</strong></td><td>Replicação do DNA (2d → 4d)</td><td>Verificação de erros de replicação</td></tr>
+          <tr><td><strong>G2</strong></td><td>Checagem do DNA, preparação para divisão</td><td>G2/M — verifica conclusão da replicação</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout key">
+      <span class="callout-icon">🧠</span>
+      <div class="callout-body">
+        <strong>Pontos-chave para Prova</strong>
+        G1/S = ponto mais crítico (primeiro). p53 atua em G1 e G2. Se dano irreparável → apoptose. A fase S é onde o DNA se replica (2d→4d). G0 = quiescência (saída do ciclo).
+      </div>
+    </div>
+  </div>
+
+  <!-- MITOSE -->
+  <div class="content-block">
+    <h3>Mitose: Divisão Somática</h3>
+    <p>Produz <strong>2 células-filhas diploides idênticas (2n)</strong> à célula-mãe. Usada para crescimento, cicatrização e reparo tecidual.</p>
+
+    <div class="expandable">
+      <div class="expand-trigger" onclick="toggleExpand(this)">
+        📋 Ver etapas da mitose em detalhe <span class="chevron">▼</span>
+      </div>
+      <div class="expand-content">
+        <ol style="padding-left:20px;color:var(--text-secondary);font-size:.88rem">
+          <li style="margin-bottom:8px"><strong style="color:var(--accent)">Prófase:</strong> Cromossomos condensam-se e ficam visíveis. Nucléolo desaparece. Envoltório nuclear começa a se desintegrar.</li>
+          <li style="margin-bottom:8px"><strong style="color:var(--accent)">Metáfase:</strong> Fuso mitótico alinha cromossomos na placa equatorial (meio da célula).</li>
+          <li style="margin-bottom:8px"><strong style="color:var(--accent)">Anáfase:</strong> Cromátides-irmãs são separadas e puxadas para polos opostos.</li>
+          <li style="margin-bottom:8px"><strong style="color:var(--accent)">Telófase:</strong> Envoltório nuclear reconstituído em cada polo. Citocinese (anel de actina + miosina) divide o citoplasma em dois.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEIOSE -->
+  <div class="content-block">
+    <h3>Meiose: Divisão Germinativa</h3>
+    <p>Duas divisões sequenciais (Meiose I + II) produzindo <strong>4 células haploides geneticamente únicas (1n)</strong>. Ocorre nas gônadas para produção de gametas.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Evento</th><th>Meiose I (Reducional)</th><th>Meiose II (Equatorial)</th></tr></thead>
+        <tbody>
+          <tr><td>O que separa</td><td>Cromossomos homólogos</td><td>Cromátides-irmãs</td></tr>
+          <tr><td>Crossing-over</td><td>Prófase I (longa)</td><td>Não ocorre</td></tr>
+          <tr><td>Nova fase S</td><td>Necessária antes</td><td>Não ocorre</td></tr>
+          <tr><td>Resultado</td><td>2 células (23 cromossomos dup.)</td><td>4 células (23 cromossomos 1n)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-body">
+        <strong>Erro Clássico de Prova</strong>
+        Na Meiose I separam-se cromossomos HOMÓLOGOS (não as cromátides). As cromátides-irmãs só são separadas na Meiose II. O crossing-over ocorre na Prófase I — responsável pela diversidade genética.
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARATIVO -->
+  <div class="content-block" id="comp-mit-mei">
+    <h3>Resumo Comparativo</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Característica</th><th>Mitose</th><th>Meiose</th></tr></thead>
+        <tbody>
+          <tr><td>Onde ocorre</td><td>Células somáticas (corpo)</td><td>Células germinativas (gônadas)</td></tr>
+          <tr><td>Resultado</td><td>2 células idênticas (2n)</td><td>4 células únicas (1n)</td></tr>
+          <tr><td>Objetivo</td><td>Crescimento e reparo</td><td>Reprodução e diversidade</td></tr>
+          <tr><td>Crossing-over</td><td>Não ocorre</td><td>Prófase I</td></tr>
+          <tr><td>Divisões</td><td>1</td><td>2 (I e II)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-controls">
+      <button class="btn-mark" onclick="markDone(this,'ciclo')">✓ Concluído</button>
+      <button class="btn-mark" onclick="markStar(this,'ciclo')">★ Importante</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     SECTION 3 — CÂNCER E DNA
+     ================================================================ -->
+<div class="section-divider"><hr></div>
+<div class="content-section fade-in" id="cancer-dna">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <span class="section-icon">🧬</span>
+    <h2>Ciclo Celular, Reparo e Oncogênese</h2>
+  </div>
+
+  <div class="content-block">
+    <h3>Pontos de Controle (Checkpoints)</h3>
+    <p>O ciclo celular é monitorado por sensores de qualidade que interrompem a progressão quando detectam problemas no DNA.</p>
+    <div class="pill-row">
+      <span class="pill accent">G1/S — mais crítico</span>
+      <span class="pill">G2/M — pré-divisão</span>
+      <span class="pill yellow">Fuso mitótico</span>
+    </div>
+    <div class="callout clinical">
+      <span class="callout-icon">⚙️</span>
+      <div class="callout-body">
+        <strong>Motor e Guardas do Ciclo</strong>
+        <strong>Motor:</strong> Complexos Ciclina-CDK (interruptores que ativam cada etapa no momento certo).<br>
+        <strong>Guardas:</strong> p53 (guardiã do genoma), pRb (retinoblastoma), inibidores de CDK.
+      </div>
+    </div>
+  </div>
+
+  <div class="content-block">
+    <h3>Do Reparo ao Câncer</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Etapa</th><th>Evento</th><th>Consequência se falhar</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Dano ao DNA detectado</td><td>—</td></tr>
+          <tr><td>2</td><td>Checkpoint ativa p53</td><td>Sem parada do ciclo</td></tr>
+          <tr><td>3</td><td>p53 para ciclo em G1 (via p21)</td><td>Replicação com DNA danificado</td></tr>
+          <tr><td>4</td><td>Reparo do DNA (MMR, BRCA1/2)</td><td>Instabilidade genômica</td></tr>
+          <tr><td>5</td><td>Sucesso → retomada. Falha → apoptose</td><td>Fenótipo mutador</td></tr>
+          <tr><td>6</td><td>—</td><td class="text-red">Acúmulo de mutações → CÂNCER</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-body">
+        <strong>Genes de Reparo Importantes para Prova</strong>
+        MMR (Mismatch Repair): Lynch. BRCA1/2: mama e ovário. Defeitos em genes de nucleotide excision repair (NER): Xeroderma Pigmentoso → altíssimo risco de câncer de pele.
+      </div>
+    </div>
+  </div>
+
+  <div class="content-block">
+    <h3>Proto-oncogenes vs Oncogenes</h3>
+    <p><strong>Proto-oncogenes:</strong> genes normais que regulam crescimento e divisão celular. Quando mutados por ganho de função → tornam-se <strong>oncogenes</strong> → proliferação descontrolada independente de sinais externos.</p>
+    <p><strong>Genes supressores de tumor</strong> (ex: TP53, CDKN2A): precisam de perda de função em AMBOS os alelos (hipótese dos dois golpes — Knudson).</p>
+
+    <div class="mind-map">
+      <div class="mm-center">🧬 Oncogênese</div>
+      <div class="mm-branches">
+        <div class="mm-branch">Proto-oncogene → Oncogene (ganho de função)</div>
+        <div class="mm-branch">Supressor de tumor inativado (perda de função)</div>
+        <div class="mm-branch">Reparo DNA defeituoso (MMR, BRCA)</div>
+        <div class="mm-branch">Imortalidade (telomerase ativada)</div>
+        <div class="mm-branch">Angiogênese tumoral</div>
+        <div class="mm-branch">Evasão da apoptose (BCL-2↑)</div>
+      </div>
+    </div>
+
+    <div class="section-controls">
+      <button class="btn-mark" onclick="markDone(this,'cancer-dna')">✓ Concluído</button>
+      <button class="btn-mark" onclick="markStar(this,'cancer-dna')">★ Importante</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     SECTION 4 — PROTEÍNA p53
+     ================================================================ -->
+<div class="section-divider"><hr></div>
+<div class="content-section fade-in" id="p53">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <span class="section-icon">🛡️</span>
+    <h2>A Proteína p53 — Guardiã do Genoma</h2>
+  </div>
+
+  <div class="content-block">
+    <div class="callout key">
+      <span class="callout-icon">📌</span>
+      <div class="callout-body">
+        <strong>Resumo Ultra-Objetivo</strong>
+        p53 é fator de transcrição ativado por dano ao DNA. Decide entre reparo (parada do ciclo via p21) e morte celular (apoptose via BAX/PUMA) com base na gravidade e persistência do dano.
+      </div>
+    </div>
+
+    <h3>Mecanismo de Decisão da p53</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Condição</th><th>Resposta p53</th><th>Genes Ativados</th></tr></thead>
+        <tbody>
+          <tr><td>Dano leve / transitório</td><td>Parada do ciclo (G1)</td><td>p21 (CDKN1A), GADD45 — alta afinidade</td></tr>
+          <tr><td>Reparado com sucesso</td><td>MDM2 degrada p53</td><td>Ciclo retomado</td></tr>
+          <tr><td>Dano grave / irreparável</td><td>Apoptose</td><td>BAX, PUMA, BAK — baixa afinidade</td></tr>
+          <tr><td>Estresse crônico</td><td>Senescência</td><td>Parada permanente sem morte</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="expandable">
+      <div class="expand-trigger" onclick="toggleExpand(this)">
+        🔬 Detalhe: Por que p53 prefere reparo antes de apoptose? <span class="chevron">▼</span>
+      </div>
+      <div class="expand-content">
+        <p style="color:var(--text-secondary);font-size:.88rem">A p53 possui <strong>afinidade natural mais alta</strong> pelos promotores de genes de parada/reparo (p21, GADD45) do que pelos promotores de genes pró-apoptóticos (BAX, PUMA). Assim, em baixas concentrações de p53 (dano leve), apenas os genes de reparo são ativados.</p>
+        <p style="color:var(--text-secondary);font-size:.88rem;margin-top:8px">Com dano persistente, p53 acumula no núcleo e atinge concentração suficiente para ocupar os promotores de baixa afinidade → ativa via intrínseca da apoptose → permeabilização mitocondrial → citocromo c → caspases → morte celular.</p>
+      </div>
+    </div>
+
+    <div class="callout danger">
+      <span class="callout-icon">🚨</span>
+      <div class="callout-body">
+        <strong>Mutação TP53 → Câncer</strong>
+        TP53 é o gene supressor mais frequentemente mutado em cânceres humanos (~50% dos tumores). Sem p53 funcional: DNA danificado não é reparado e a célula não morre → fenótipo mutador → câncer.
+      </div>
+    </div>
+
+    <div class="section-controls">
+      <button class="btn-mark" onclick="markDone(this,'p53')">✓ Concluído</button>
+      <button class="btn-mark" onclick="markStar(this,'p53')">★ Importante</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     SECTION 5 — NEOPLASIAS CUTÂNEAS
+     ================================================================ -->
+<div class="section-divider"><hr></div>
+<div class="content-section fade-in" id="neoplasias">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <span class="section-icon">🔬</span>
+    <h2>Neoplasias Cutâneas: Tipos e Diferenciação</h2>
+  </div>
+
+  <div class="content-block">
+    <div class="callout key">
+      <span class="callout-icon">📌</span>
+      <div class="callout-body">
+        <strong>Resumo Ultra-Objetivo</strong>
+        Neoplasia = crescimento celular excessivo e independente de controles fisiológicos. Benigna = bem delimitada, sem metástase. Maligna = invasiva, metastatizante, anaplásica.
+      </div>
+    </div>
+
+    <h3>Benigna vs Maligna</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Característica</th><th>Benigna</th><th>Maligna</th></tr></thead>
+        <tbody>
+          <tr><td>Crescimento</td><td>Lento, organizado</td><td>Rápido, autônomo</td></tr>
+          <tr><td>Delimitação</td><td>Cápsula fibrosa bem definida</td><td>Bordas irregulares, infiltrativas</td></tr>
+          <tr><td>Diferenciação</td><td>Células bem diferenciadas</td><td>Anaplásicas (pouco diferenciadas)</td></tr>
+          <tr><td>Invasão local</td><td>Não</td><td>Sim</td></tr>
+          <tr><td>Metástase</td><td>Não</td><td>Sim</td></tr>
+          <tr><td>Exemplos (pele)</td><td>Lipoma, nevo, fibroma</td><td>CBC, CEC, Melanoma</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="content-block" id="fisiopato">
+    <h3>Os 3 Principais Cânceres de Pele</h3>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Característica</th>
+            <th>CBC</th>
+            <th>CEC</th>
+            <th>Melanoma</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Frequência</td><td class="text-accent">~70% (mais comum)</td><td class="text-yellow">~25%</td><td class="text-red">~4%</td></tr>
+          <tr><td>Origem celular</td><td>Queratinócitos basais</td><td>Células escamosas</td><td>Melanócitos</td></tr>
+          <tr><td>Metástase</td><td class="text-green">Muito rara</td><td class="text-yellow">Possível/Regional</td><td class="text-red">Alta e precoce</td></tr>
+          <tr><td>Via molecular</td><td>Hedgehog (PTCH)</td><td>UV cumulativo, HPV</td><td>BRAF, NRAS, CDKN2A</td></tr>
+          <tr><td>Aspecto típico</td><td>Nódulo perláceo + vasos arboriformes</td><td>Placa áspera hiperqueratósica</td><td>Lesão escura ABCDE+</td></tr>
+          <tr><td>Precursor</td><td>—</td><td>Queratose actínica</td><td>Nevo displásico</td></tr>
+          <tr><td>Prognóstico</td><td class="text-green">Bom</td><td class="text-yellow">Moderado</td><td class="text-red">Ruim se tardio</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout clinical">
+      <span class="callout-icon">🩺</span>
+      <div class="callout-body">
+        <strong>Aplicação Prática</strong>
+        CBC: cirurgia de Mohs para face. CEC: excisar com margens + tratar precursores actínicos. Melanoma: excisão com margens pelo Breslow + biópsia sentinela se >1mm + estadiamento sistêmico.
+      </div>
+    </div>
+
+    <div class="section-controls">
+      <button class="btn-mark" onclick="markDone(this,'neoplasias')">✓ Concluído</button>
+      <button class="btn-mark" onclick="markStar(this,'neoplasias')">★ Importante</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     SECTION 6 — FATORES DE RISCO
+     ================================================================ -->
+<div class="section-divider"><hr></div>
+<div class="content-section fade-in" id="fatores">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <span class="section-icon">⚠️</span>
+    <h2>Fatores Intrínsecos e Extrínsecos</h2>
+  </div>
+
+  <div class="content-block">
+    <div class="callout key">
+      <span class="callout-icon">📌</span>
+      <div class="callout-body">
+        <strong>Resumo</strong>
+        80–90% dos cânceres têm fator ambiental evitável. Câncer = multifatorial sinérgico: fatores intrínsecos (genética, idade, hormônios, imunidade) + extrínsecos (UV, tabaco, HPV, dieta) interagem de forma exponencial.
+      </div>
+    </div>
+
+    <h3>Fatores Intrínsecos (Endógenos)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Fator</th><th>Mecanismo</th><th>Exemplo</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Hereditariedade</strong></td><td>Mutações germinativas em supressores (BRCA1/2, TP53)</td><td>Li-Fraumeni, Lynch, CDKN2A</td></tr>
+          <tr><td><strong>Idade</strong></td><td>Acúmulo de mutações somáticas ao longo do tempo</td><td>CBC raro em jovens</td></tr>
+          <tr><td><strong>Hormônios</strong></td><td>Estrogênio promove proliferação em tecidos sensíveis</td><td>Mama, endométrio</td></tr>
+          <tr><td><strong>Imunocompetência</strong></td><td>Falha na vigilância imune → escape de clones malignos</td><td>AIDS, pós-transplante</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:20px">Fatores Extrínsecos (Ambientais)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Agente</th><th>Mecanismo</th><th>Câncer associado</th></tr></thead>
+        <tbody>
+          <tr><td><strong>UVB</strong></td><td>Dímeros de pirimidina → mutações C→T</td><td>CBC, CEC, Melanoma</td></tr>
+          <tr><td><strong>Tabaco</strong></td><td>90% câncer pulmão, ≥15 outros tipos</td><td>Pulmão, boca, bexiga</td></tr>
+          <tr><td><strong>HPV</strong></td><td>E6 degrada p53, E7 inativa pRb</td><td>Colo uterino, orofaringe, CEC</td></tr>
+          <tr><td><strong>HBV/HCV</strong></td><td>Inflamação crônica + integração viral</td><td>Carcinoma hepatocelular</td></tr>
+          <tr><td><strong>H. pylori</strong></td><td>Inflamação gástrica crônica</td><td>Adenocarcinoma, linfoma MALT</td></tr>
+          <tr><td><strong>Obesidade</strong></td><td>Inflamação crônica, alterações hormonais</td><td>Cólon, endométrio, rim</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-body">
+        <strong>Multifatorialidade Sinérgica</strong>
+        Combinação de fatores aumenta o risco exponencialmente (não apenas somação). Ex: UV + imunossupressão + fototipo baixo = risco muito maior que cada fator isolado.
+      </div>
+    </div>
+
+    <div class="section-controls">
+      <button class="btn-mark" onclick="markDone(this,'fatores')">✓ Concluído</button>
+      <button class="btn-mark" onclick="markStar(this,'fatores')">★ Importante</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     SECTION 7 — DIAGNÓSTICO E TRATAMENTO
+     ================================================================ -->
+<div class="section-divider"><hr></div>
+<div class="content-section fade-in" id="diagnostico">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <span class="section-icon">🩺</span>
+    <h2>Diagnóstico e Tratamento</h2>
+  </div>
+
+  <div class="content-block" id="tratamento">
+    <div class="callout key">
+      <span class="callout-icon">📌</span>
+      <div class="callout-body">
+        <strong>Fluxo Diagnóstico</strong>
+        Inspeção visual (ABCDE) → Dermatoscopia → Biópsia (excisional preferencialmente para melanoma) → Histopatologia + Breslow → Estadiamento (sentinela, imagem se avançado)
+      </div>
+    </div>
+
+    <h3>Métodos Diagnósticos</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Método</th><th>Uso</th><th>Observação</th></tr></thead>
+        <tbody>
+          <tr><td>Inspeção visual + ABCDE</td><td>Triagem inicial</td><td>Sensibilidade ~71%</td></tr>
+          <tr><td>Dermatoscopia</td><td>Aumentar acurácia</td><td>Sensibilidade ~89%</td></tr>
+          <tr><td>Biópsia excisional</td><td>Diagnóstico definitivo</td><td>Preferencial para melanoma</td></tr>
+          <tr><td>Histopatologia</td><td>Tipo celular, Breslow, margens</td><td>Exame definitivo</td></tr>
+          <tr><td>Biópsia linfonodo sentinela</td><td>Estadiamento N</td><td>Indicada se Breslow >1mm</td></tr>
+          <tr><td>TC / PET-CT</td><td>Metástases a distância</td><td>Casos avançados</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:20px">Métodos Terapêuticos</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Modalidade</th><th>Indicação</th><th>Detalhe</th></tr></thead>
+        <tbody>
+          <tr><td>Cirurgia convencional</td><td>CBC, CEC, Melanoma</td><td>Margens variam por Breslow</td></tr>
+          <tr><td>Cirurgia de Mohs</td><td>CBC face / alto risco</td><td>100% margens em tempo real</td></tr>
+          <tr><td>Criocirurgia</td><td>CBC superficial, queratoses</td><td>Nitrogênio líquido</td></tr>
+          <tr><td>Imiquimod tópico</td><td>CBC superficial</td><td>Imunomodulador local</td></tr>
+          <tr><td>5-Fluorouracil tópico</td><td>Queratoses actínicas</td><td>Antimetabólito tópico</td></tr>
+          <tr><td>Imunoterapia (anti-PD-1)</td><td>Melanoma metastático</td><td>Pembrolizumab, Nivolumab</td></tr>
+          <tr><td>Terapia-alvo anti-BRAF</td><td>Melanoma BRAF+ avançado</td><td>Vemurafenib, Dabrafenib</td></tr>
+          <tr><td>Radioterapia</td><td>Adjuvante / paliativo</td><td>Metástases ósseas e cerebrais</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-controls">
+      <button class="btn-mark" onclick="markDone(this,'diag')">✓ Concluído</button>
+      <button class="btn-mark" onclick="markStar(this,'diag')">★ Importante</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     SECTION 8 — EPIDEMIOLOGIA
+     ================================================================ -->
+<div class="section-divider"><hr></div>
+<div class="content-section fade-in" id="epidemio">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <span class="section-icon">📊</span>
+    <h2>Epidemiologia do Câncer de Pele</h2>
+  </div>
+
+  <div class="content-block">
+    <div class="callout key">
+      <span class="callout-icon">📌</span>
+      <div class="callout-body">
+        <strong>Dados Chave Brasil</strong>
+        Câncer de pele não melanoma = MAIS comum no Brasil (~26% de todos os tumores malignos). CBC ~70%, CEC ~25%. Melanoma ~4% mas é o mais letal. Maior incidência de melanoma na região Sul.
+      </div>
+    </div>
+
+    <h3>Perfil Epidemiológico</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Parâmetro</th><th>Não Melanoma (CBC+CEC)</th><th>Melanoma</th></tr></thead>
+        <tbody>
+          <tr><td>% tumores malignos (BR)</td><td class="text-accent">~26%</td><td class="text-red">~4% dos cutâneos</td></tr>
+          <tr><td>Perfil demográfico</td><td>>40 anos, pele clara (I-II)</td><td>Jovens e adultos, Sul do Brasil</td></tr>
+          <tr><td>Tipo de exposição UV</td><td>Crônica/cumulativa</td><td>Intermitente/queimaduras</td></tr>
+          <tr><td>Mortalidade</td><td>Baixa</td><td>Alta se tardio</td></tr>
+          <tr><td>Tendência</td><td>Estável</td><td>Crescente nas últimas décadas</td></tr>
+          <tr><td>Gene hereditário</td><td>—</td><td>CDKN2A (70x risco familiar)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-body">
+        <strong>Dado para Prova</strong>
+        UV crônica → CEC (células escamosas fotoexpostas). UV intermitente/queimaduras → Melanoma (melanócitos mais sensíveis a episódios agudos). Xeroderma Pigmentoso = defeito no NER → risco extremo de todos os cânceres de pele por UV.
+      </div>
+    </div>
+
+    <h3 style="margin-top:20px">Linhas de Cuidado no SUS</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Nível</th><th>Ação</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Atenção Primária</strong></td><td>Promoção, prevenção, rastreamento de sinais iniciais, educação sobre fotoproteção</td></tr>
+          <tr><td><strong>Média Complexidade</strong></td><td>Diagnóstico definitivo (biópsia), tratamento de lesões precursoras</td></tr>
+          <tr><td><strong>Alta Complexidade</strong></td><td>Cirurgia oncológica, quimioterapia, imunoterapia, radioterapia (UNACON/CACON)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-controls">
+      <button class="btn-mark" onclick="markDone(this,'epidemio')">✓ Concluído</button>
+      <button class="btn-mark" onclick="markStar(this,'epidemio')">★ Importante</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     SECTION 9 — FOLLOW-UP
+     ================================================================ -->
+<div class="section-divider"><hr></div>
+<div class="content-section fade-in" id="followup">
+  <div class="section-header">
+    <span class="section-num">09</span>
+    <span class="section-icon">📋</span>
+    <h2>Acompanhamento Pós-Tratamento (Follow-up)</h2>
+  </div>
+
+  <div class="content-block">
+    <div class="callout key">
+      <span class="callout-icon">📌</span>
+      <div class="callout-body">
+        <strong>Objetivo</strong>
+        Detectar precocemente recidivas, monitorar toxicidades tardias e promover reabilitação. Vigilância mais intensa nos primeiros 2–3 anos (maior risco de recidiva).
+      </div>
+    </div>
+
+    <h3>Protocolo de Follow-up (Exemplo: Linfoma de Hodgkin)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Período</th><th>Frequência</th><th>Exames</th></tr></thead>
+        <tbody>
+          <tr><td>1º ano</td><td>A cada 2 meses</td><td>Clínico + laboratorial + TC a cada 6 meses</td></tr>
+          <tr><td>2º ano</td><td>A cada 3 meses</td><td>Clínico + laboratorial</td></tr>
+          <tr><td>3º ano</td><td>A cada 4 meses</td><td>Clínico</td></tr>
+          <tr><td>5º ano em diante</td><td>Anual</td><td>Avaliação global</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:16px">Componentes do Seguimento</h3>
+    <div class="pill-row">
+      <span class="pill accent">Anamnese + Exame Físico</span>
+      <span class="pill">Marcadores tumorais (PSA, CEA, CA-125)</span>
+      <span class="pill yellow">Vigilância de 2ª neoplasia</span>
+      <span class="pill green">Suporte psicossocial</span>
+      <span class="pill">Biópsia líquida (novo)</span>
+      <span class="pill">Toxicidade cardíaca e endócrina</span>
+    </div>
+
+    <div class="section-controls">
+      <button class="btn-mark" onclick="markDone(this,'followup')">✓ Concluído</button>
+      <button class="btn-mark" onclick="markStar(this,'followup')">★ Importante</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     SECTION 10 — TABELAS RESUMO
+     ================================================================ -->
+<div class="section-divider"><hr></div>
+<div class="content-section fade-in" id="tabelas">
+  <div class="section-header">
+    <span class="section-num">10</span>
+    <span class="section-icon">📊</span>
+    <h2>Tabelas-Resumo Integradas</h2>
+  </div>
+
+  <div class="content-block">
+    <h3>Breslow × Conduta Cirúrgica</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Índice de Breslow</th><th>Margem Cirúrgica</th><th>Linfonodo Sentinela</th></tr></thead>
+        <tbody>
+          <tr><td class="text-green">≤ 1 mm</td><td>1 cm</td><td class="text-muted">Geralmente não indicada</td></tr>
+          <tr><td class="text-yellow">1 – 2 mm</td><td>> 1 cm</td><td class="text-yellow">Indicada</td></tr>
+          <tr><td class="text-red">> 2 mm</td><td>2 – 3 cm</td><td class="text-red">Indicada</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="content-block">
+    <h3>Diagnóstico Diferencial: CBC vs CEC vs Melanoma</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>CBC</th><th>CEC</th><th>Melanoma</th></tr></thead>
+        <tbody>
+          <tr><td>Aspecto</td><td>Perláceo, brilhante</td><td>Áspero, hiperqueratósico</td><td>Escuro, ABCDE positivo</td></tr>
+          <tr><td>Via Molecular</td><td>Hedgehog (PTCH)</td><td>UV, HPV</td><td>BRAF V600E (~50%)</td></tr>
+          <tr><td>Biópsia ideal</td><td>Excisional ou punch</td><td>Excisional</td><td>Excisional (obrigatório)</td></tr>
+          <tr><td>Cirurgia</td><td>Mohs (face)</td><td>Excisão ampla</td><td>Excisão + Breslow</td></tr>
+          <tr><td>Sistêmico</td><td>Vismodegib (avançado)</td><td>Cetuximab (avançado)</td><td>Anti-PD-1, Anti-BRAF</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     SECTION 11 — QUESTÕES
+     ================================================================ -->
+<div class="section-divider"><hr></div>
+<div class="content-section fade-in" id="questoes">
+  <div class="section-header">
+    <span class="section-num">11</span>
+    <span class="section-icon">📝</span>
+    <h2>Questões de Revisão — SP 1.1</h2>
+  </div>
+
+  <div id="quiz-stats" style="display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap">
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px 20px;text-align:center">
+      <div style="font-family:var(--font-head);font-size:1.4rem;font-weight:800;color:var(--green)" id="stat-correct">0</div>
+      <div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em">Corretas</div>
+    </div>
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px 20px;text-align:center">
+      <div style="font-family:var(--font-head);font-size:1.4rem;font-weight:800;color:var(--red)" id="stat-wrong">0</div>
+      <div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em">Incorretas</div>
+    </div>
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px 20px;text-align:center">
+      <div style="font-family:var(--font-head);font-size:1.4rem;font-weight:800;color:var(--accent)" id="stat-total">0</div>
+      <div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em">Respondidas</div>
+    </div>
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px 20px;text-align:center">
+      <div style="font-family:var(--font-head);font-size:1.4rem;font-weight:800;color:var(--yellow)" id="stat-pct">—</div>
+      <div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em">Aproveitamento</div>
+    </div>
+    <button class="btn btn-outline" onclick="resetAllQuizzes()" style="align-self:center">↺ Refazer Todas</button>
+  </div>
+
+  <!-- QUIZ ITEMS WILL BE RENDERED BY JS -->
+  <div id="quiz-list"></div>
+</div>
+
+<!-- ================================================================
+     SECTION 12 — FLASHCARDS
+     ================================================================ -->
+<div class="section-divider"><hr></div>
+<div class="content-section fade-in" id="flashcards">
+  <div class="section-header">
+    <span class="section-num">12</span>
+    <span class="section-icon">🃏</span>
+    <h2>Flashcards de Revisão</h2>
+  </div>
+
+  <div class="flashcard-controls">
+    <button class="btn btn-outline" onclick="shuffleFlashcards()">🔀 Embaralhar</button>
+    <button class="btn btn-outline" onclick="flipAllCards()">↩ Virar Todos</button>
+    <button class="btn btn-outline" onclick="resetFlashcards()">↺ Resetar</button>
+  </div>
+
+  <div class="flashcard-grid" id="flashcard-grid"></div>
+</div>
+
+<div class="sep"></div>
+
+</main><!-- /main -->
+
+<!-- ================================================================
+     QUICK REVIEW OVERLAY
+     ================================================================ -->
+<div id="review-overlay">
+  <button class="review-close" onclick="toggleReview()">✕ Fechar Revisão</button>
+  <div style="max-width:700px;margin:0 auto;padding-top:40px">
+    <div style="font-family:var(--font-head);font-size:1.8rem;font-weight:800;color:var(--accent);margin-bottom:8px">⚡ Revisão Rápida 24h</div>
+    <div style="color:var(--text-secondary);font-size:.9rem;margin-bottom:32px">Pontos críticos para memorização ativa</div>
+    <div id="review-content"></div>
+  </div>
+</div>
+
+<!-- ================================================================
+     STATS BAR
+     ================================================================ -->
+<div id="stats-bar">
+  <div class="stat-item"><div class="stat-dot"></div><span>Seções vistas: <strong id="sb-seen">0</strong>/9</span></div>
+  <div class="stat-item"><div class="stat-dot green"></div><span>Concluídos: <strong id="sb-done">0</strong></span></div>
+  <div class="stat-item"><div class="stat-dot" style="background:var(--yellow)"></div><span>Estrelas: <strong id="sb-star">0</strong></span></div>
+  <div class="stat-item" style="margin-left:auto"><span style="font-family:var(--font-mono);font-size:.72rem;color:var(--text-muted)">NCS 4 · SP 1.1 · AGES</span></div>
+</div>
+
+<!-- Mobile toggle -->
+<button id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+
+<!-- ================================================================
+     JAVASCRIPT
+     ================================================================ -->
+<script>
+// ============================================================
+// DATA — QUIZ QUESTIONS
+// ============================================================
+const quizData = [
+  {
+    q: "O que é o sistema ABCDE no contexto do melanoma?",
+    opts: [
+      "Protocolo de quimioterapia combinada para melanoma metastático",
+      "Guia clínico-visual para identificar lesões suspeitas de melanoma com base em critérios morfológicos",
+      "Escala de estadiamento cirúrgico para carcinoma basocelular",
+      "Sistema de dosagem de radioterapia para tumores cutâneos"
+    ],
+    correct: 1,
+    exp: "O sistema ABCDE é um guia de triagem clínica baseado em 5 critérios morfológicos: <strong>A</strong>ssimetria, <strong>B</strong>ordas irregulares, <strong>C</strong>or variada, <strong>D</strong>iâmetro >6mm e <strong>E</strong>volução. É a principal ferramenta de rastreamento clínico para melanoma.",
+    topic: "vocab"
+  },
+  {
+    q: "O que significa a letra 'A' no sistema ABCDE?",
+    opts: ["Área maior que 2 cm²","Ausência de bordas regulares","Assimetria: uma metade da lesão é diferente da outra","Alteração pigmentar recente"],
+    correct: 2,
+    exp: "A = <strong>Assimetria</strong>: uma metade da lesão não é espelhada pela outra. Nevos benignos tendem a ser simétricos. Melanomas crescem de forma irregular.",
+    topic: "vocab"
+  },
+  {
+    q: "O que significa a letra 'B' no sistema ABCDE?",
+    opts: ["Brilho perláceo típico do CBC","Bordas irregulares, serrilhadas ou imprecisas","Base eritematosa da lesão","Biópsia obrigatória antes do tratamento"],
+    correct: 1,
+    exp: "B = <strong>Bordas</strong> irregulares, serrilhadas ou mal delimitadas. Nevos benignos têm bordas suaves. Melanomas frequentemente apresentam projeções e reentrâncias irregulares.",
+    topic: "vocab"
+  },
+  {
+    q: "O que significa a letra 'C' no sistema ABCDE?",
+    opts: ["Consistência endurecida ao toque","Cronicidade maior que 6 meses","Cor variada, com diferentes tons de preto, marrom, cinza ou azul","Crescimento acima de 1mm por ano"],
+    correct: 2,
+    exp: "C = <strong>Cor</strong> variada (policromia). Melanomas frequentemente exibem mais de uma cor na mesma lesão: preto, marrom escuro, cinza, azul, vermelho ou branco (área de regressão).",
+    topic: "vocab"
+  },
+  {
+    q: "O que significa a letra 'D' no sistema ABCDE?",
+    opts: ["Dermoscopia necessária para avaliação","Dermite concomitante na área","Diagnóstico histopatológico obrigatório","Diâmetro geralmente maior que 6 mm"],
+    correct: 3,
+    exp: "D = <strong>Diâmetro</strong> geralmente maior que 6 mm. Melanomas precoces podem ser menores, por isso versões atualizadas enfatizam mais o 'E' de Evolução como critério mais sensível.",
+    topic: "vocab"
+  },
+  {
+    q: "O que significa a letra 'E' no sistema ABCDE?",
+    opts: ["Eritema perilesional","Extensão para linfonodos regionais","Etiologia solar confirmada","Evolução ou elevação: crescimento ou mudança recente na lesão"],
+    correct: 3,
+    exp: "E = <strong>Evolução</strong> (ou Elevação). Qualquer mudança recente em tamanho, cor, forma ou desenvolvimento de sintomas (coceira, sangramento) é um sinal de alarme importante.",
+    topic: "vocab"
+  },
+  {
+    q: "O que é dermatoscopia e qual sua importância clínica?",
+    opts: [
+      "Exame invasivo com biópsia por agulha fina para análise celular",
+      "Exame não invasivo com lente de aumento e luz intensa que permite visualizar estruturas cutâneas invisíveis ao olho nu",
+      "Técnica cirúrgica de excisão micrográfica com análise intraoperatória",
+      "Método de estadiamento por imagem para melanoma avançado"
+    ],
+    correct: 1,
+    exp: "A dermatoscopia (epiluminescência) utiliza luz polarizada e magnificação para visualizar estruturas na epiderme e derme papilar. <strong>Aumenta a sensibilidade diagnóstica de ~71% para ~89%</strong> comparado à inspeção visual simples.",
+    topic: "vocab"
+  },
+  {
+    q: "O que caracteriza o fototipo II na escala de Fitzpatrick?",
+    opts: [
+      "Pele muito escura que nunca se queima e bronzeia intensamente",
+      "Pele negra sem qualquer reação à exposição solar",
+      "Pele clara que se queima facilmente e bronzeia pouco",
+      "Pele morena clara que às vezes se queima e bronzeia moderadamente"
+    ],
+    correct: 2,
+    exp: "Fototipo II = pele clara que <strong>queima com facilidade e bronzeia pouco</strong>. Junto com o Fototipo I (sempre queima, nunca bronzeia), são os fototipos com maior risco para CBC, CEC e melanoma pela menor concentração de melanina protetora.",
+    topic: "vocab"
+  },
+  {
+    q: "Por que fototipos I e II apresentam maior risco para câncer de pele?",
+    opts: [
+      "Porque possuem mais células de Langerhans e maior resposta inflamatória",
+      "Porque possuem menor quantidade de melanina, reduzindo a proteção contra radiação UV",
+      "Porque apresentam mutações germinativas em BRCA2 com maior frequência",
+      "Porque têm a camada córnea mais espessa, dificultando a reparação do DNA"
+    ],
+    correct: 1,
+    exp: "Fototipos I e II possuem <strong>menor quantidade de eumelanina</strong>, o principal filtro natural contra UVB. Isso resulta em maior penetração da radiação ultravioleta e formação de dímeros de pirimidina no DNA — principal evento mutagênico do câncer de pele.",
+    topic: "vocab"
+  },
+  {
+    q: "O que são vasos arboriformes e com qual tumor estão associados?",
+    opts: [
+      "Vasos linfáticos dilatados associados ao melanoma metastático",
+      "Telangiectasias ramificadas em forma de galhos de árvore, hallmark do carcinoma basocelular",
+      "Capilares neoformados típicos do carcinoma espinocelular invasivo",
+      "Vasos de grande calibre visíveis na dermatoscopia do melanoma nodular"
+    ],
+    correct: 1,
+    exp: "Vasos arboriformes são <strong>telangiectasias com morfologia de galhos de árvore</strong> (vasos centrais que se ramificam em capilares finos). São considerados o sinal dermatoscópico mais característico do <strong>carcinoma basocelular</strong>, especialmente das formas nodular e morfeiforme.",
+    topic: "vocab"
+  },
+  {
+    q: "O que é o linfonodo sentinela?",
+    opts: [
+      "O maior linfonodo da cadeia axilar avaliado no estadiamento do CBC",
+      "Qualquer linfonodo aumentado em paciente com câncer de pele",
+      "O primeiro linfonodo que recebe drenagem linfática diretamente do tumor primário",
+      "O último linfonodo da cadeia antes de atingir a circulação sistêmica"
+    ],
+    correct: 2,
+    exp: "O linfonodo sentinela é o <strong>primeiro linfonodo</strong> da cadeia regional a receber o fluxo de linfa do tumor. Se estiver livre de metástases, é provável que os demais também estejam — evitando linfadenectomias desnecessárias.",
+    topic: "vocab"
+  },
+  {
+    q: "Qual é a principal característica clínica do carcinoma basocelular nodular?",
+    opts: [
+      "Lesão eritematosa com escamas aderentes e ulceração central profunda",
+      "Pápula ou nódulo liso, brilhante e translúcido (aspecto perláceo) com vasos arboriformes superficiais",
+      "Mancha hiperpigmentada assimétrica com policromia e bordas irregulares",
+      "Placa verrucosa endurecida com hiperqueratose e base eritematosa"
+    ],
+    correct: 1,
+    exp: "O CBC nodular apresenta classicamente uma <strong>pápula ou nódulo perláceo/perolado</strong>, com superfície brilhante e translúcida, frequentemente com telangiectasias arboriformes. É a forma mais comum (60–80% dos CBCs) e ocorre mais em cabeça e pescoço.",
+    topic: "vocab"
+  },
+  {
+    q: "O que é a cirurgia micrográfica de Mohs?",
+    opts: [
+      "Técnica de curetagem profunda com eletrodissecação para lesões superficiais",
+      "Ressecção ampla com margens fixas de 2cm para CBC em qualquer localização",
+      "Técnica que remove o tumor avaliando 100% das margens periféricas e profundas ao microscópio durante o procedimento",
+      "Método de biopsia excisional com análise anatomopatológica diferida em 72 horas"
+    ],
+    correct: 2,
+    exp: "Na cirurgia de Mohs, após cada excisão o cirurgião <strong>examina 100% das margens</strong> histologicamente em tempo real. Isso garante remoção completa com mínima perda de tecido saudável — especialmente importante em localizações funcionais/estéticas como a face.",
+    topic: "vocab"
+  },
+  {
+    q: "Qual a diferença entre biópsia incisional e excisional?",
+    opts: [
+      "Incisional usa bisturi, excisional usa punch de 4mm",
+      "Incisional é preferida para melanoma; excisional para lesões de CBC superficial",
+      "A excisional remove toda a lesão; a incisional remove apenas parte dela",
+      "São sinônimos para o mesmo procedimento com diferentes nomenclaturas regionais"
+    ],
+    correct: 2,
+    exp: "<strong>Biópsia excisional</strong>: retira toda a lesão — padrão-ouro para melanoma (permite Breslow completo). <strong>Biópsia incisional</strong>: retira apenas parte — para lesões grandes antes da confirmação diagnóstica. Cuidado: biópsia incisional pode subestimar Breslow.",
+    topic: "vocab"
+  },
+  {
+    q: "O que significa o estadiamento T1b no sistema TNM?",
+    opts: [
+      "Tumor com metástase confirmada em mais de um linfonodo regional",
+      "Tumor localizado com invasão de tecidos adjacentes profundos",
+      "Tumor pequeno e localizado, com subdivisão específica por órgão, diferindo-se do T1a em características ou tamanho",
+      "Tumor bilateral com comprometimento de vasos linfáticos"
+    ],
+    correct: 2,
+    exp: "T = extensão do tumor primário; N = linfonodos; M = metástases. T1b indica tumor <strong>pequeno e localizado</strong>, com subdivisão 'b' que varia conforme o órgão (ex: pulmão = IA2; próstata = não palpável, >5% tecido ressecado). É mais avançado que T1a porém ainda estágio inicial.",
+    topic: "vocab"
+  },
+  {
+    q: "O que é o Índice de Breslow?",
+    opts: [
+      "Classificação histológica dos níveis anatômicos de invasão do melanoma (I-V)",
+      "Escore de risco baseado em: espessura + ulceração + mitoses do melanoma",
+      "Medida em milímetros da profundidade de invasão do melanoma na pele",
+      "Índice de velocidade de crescimento tumoral avaliado por dermoscopia seriada"
+    ],
+    correct: 2,
+    exp: "O Índice de Breslow é a <strong>medida histológica em milímetros da profundidade vertical de invasão</strong> do melanoma, da granular da epiderme até o ponto de maior infiltração. É o parâmetro prognóstico mais importante — determina margens cirúrgicas e indicação de biópsia sentinela.",
+    topic: "vocab"
+  },
+  {
+    q: "Qual a importância prognóstica da espessura de Breslow?",
+    opts: [
+      "Quanto maior a espessura, menor a necessidade de margens cirúrgicas amplas",
+      "Quanto maior a espessura, maior o risco de metástase e pior o prognóstico",
+      "A espessura de Breslow só tem relevância para CBC, não para melanoma",
+      "Breslow >2mm indica que não é necessário pesquisar linfonodo sentinela"
+    ],
+    correct: 1,
+    exp: "Breslow é diretamente proporcional ao risco: quanto mais profunda a invasão, maior a chance de células neoplásicas atingirem vasos linfáticos e sanguíneos → maior risco de metástase regional e a distância → pior prognóstico → margens cirúrgicas maiores necessárias.",
+    topic: "vocab"
+  },
+  {
+    q: "O que são queratoses actínicas?",
+    opts: [
+      "Lesões malignas já estabelecidas derivadas de queratinócitos basais",
+      "Lesões pré-cancerígenas causadas por dano solar crônico, com aspecto áspero e escamoso em áreas fotoexpostas",
+      "Verrugas virais causadas por HPV em áreas de fotoexposição intensa",
+      "Manifestação cutânea benigna e não relacionada ao risco de malignidade"
+    ],
+    correct: 1,
+    exp: "Queratoses actínicas (solares/senis) são <strong>lesões pré-malignas</strong> por dano UV cumulativo. Representam displasia de queratinócitos. São reversíveis com tratamento precoce, mas sem tratamento podem progredir para CEC invasivo. Aspecto: ásperas, escamosas, eritematosas em áreas fotoexpostas.",
+    topic: "vocab"
+  },
+  {
+    q: "Qual é a diferença fundamental entre mitose e meiose?",
+    opts: [
+      "Mitose ocorre em células germinativas; meiose em células somáticas",
+      "Mitose produz 4 células haploides; meiose produz 2 células diploides",
+      "Mitose produz 2 células diploides idênticas (crescimento/reparo); meiose produz 4 células haploides geneticamente únicas (gametas)",
+      "A diferença está apenas no número de divisões: mitose tem 2 e meiose tem 1"
+    ],
+    correct: 2,
+    exp: "<strong>Mitose:</strong> 1 divisão → 2 células filhas diploides (2n) idênticas à mãe. Objetivo: crescimento e reparo. <strong>Meiose:</strong> 2 divisões (I e II) → 4 células haploides (1n) geneticamente únicas. Objetivo: produção de gametas para reprodução sexuada.",
+    topic: "ciclo"
+  },
+  {
+    q: "Quais são as fases da interfase?",
+    opts: ["Prófase, Metáfase, Anáfase","G0, G1, G2","G1, Fase S e G2","Prófase I, Anáfase I, Prófase II"],
+    correct: 2,
+    exp: "A interfase é composta por: <strong>G1</strong> (crescimento, síntese proteica, ponto de restrição), <strong>Fase S</strong> (replicação do DNA: 2d → 4d) e <strong>G2</strong> (checagem do DNA replicado, preparação para divisão). G0 é o estado de quiescência fora do ciclo.",
+    topic: "ciclo"
+  },
+  {
+    q: "Qual é a função da proteína p53 no ciclo celular?",
+    opts: [
+      "Estimular a progressão do ciclo na fase S para garantir replicação rápida",
+      "Inibir a apoptose celular para preservar células com dano mínimo",
+      "Atuar como guardiã do genoma: interromper o ciclo para reparo do DNA ou induzir apoptose se o dano for irreparável",
+      "Catalisar a replicação do DNA na fase S com alta fidelidade"
+    ],
+    correct: 2,
+    exp: "A p53 é o fator de transcrição mais importante na resposta ao dano ao DNA. Ativa genes de parada do ciclo (p21, GADD45) em dano leve/reparável. Em dano persistente/irreparável, ativa genes pró-apoptóticos (BAX, PUMA). Mutação em TP53 ocorre em ~50% de todos os cânceres.",
+    topic: "p53"
+  },
+  {
+    q: "O que são ciclinas e CDKs?",
+    opts: [
+      "Proteínas de reparo que corrigem erros de pareamento durante a replicação do DNA",
+      "Complexos proteicos que agem como interruptores, regulando e impulsionando a progressão do ciclo celular",
+      "Enzimas de restrição que fragmentam cromossomos durante a mitose",
+      "Fatores de crescimento extracelulares que ativam receptores de membrana"
+    ],
+    correct: 1,
+    exp: "<strong>Ciclinas</strong> variam em concentração ao longo do ciclo (daí o nome). <strong>CDKs</strong> (quinases dependentes de ciclina) são ativadas pelas ciclinas e fosforilam proteínas-alvo para avançar o ciclo. Ex: Ciclina D + CDK4/6 → fosforila pRb → liberação do fator E2F → entrada na fase S.",
+    topic: "ciclo"
+  },
+  {
+    q: "Como a falha no reparo do DNA contribui para o câncer?",
+    opts: [
+      "Inativando oncogenes que promovem a proliferação celular",
+      "Aumentando a concentração de ciclinas e bloqueando o ciclo celular permanentemente",
+      "Permitindo acúmulo de mutações com instabilidade genômica, levando a fenótipo mutador e transformação maligna",
+      "Causando hiperativação de p53 que induz senescência em todas as células"
+    ],
+    correct: 2,
+    exp: "Defeitos em genes de reparo (MMR, NER, BRCA1/2) impedem a correção de erros no DNA. A célula adquire <strong>fenótipo mutador</strong>: instabilidade genômica crescente, acúmulo de mutações em proto-oncogenes e supressores de tumor → transformação maligna. Ex: Xeroderma Pigmentoso (NER) → câncer de pele; Lynch (MMR) → câncer colo-retal.",
+    topic: "ciclo"
+  },
+  {
+    q: "O que são proto-oncogenes e oncogenes?",
+    opts: [
+      "Proto-oncogenes são genes defeituosos desde o nascimento; oncogenes são genes normais que regulam crescimento",
+      "São genes exclusivos de células tumorais não encontrados em células normais",
+      "Proto-oncogenes são genes normais que regulam crescimento; quando mutados por ganho de função tornam-se oncogenes e promovem proliferação descontrolada",
+      "Ambos são genes virais integrados ao genoma da célula hospedeira"
+    ],
+    correct: 2,
+    exp: "<strong>Proto-oncogenes</strong>: genes normais codificando proteínas de sinalização para crescimento (ex: BRAF, RAS, MYC). Uma mutação de <strong>ganho de função</strong> (ponto único pode ser suficiente) → <strong>oncogene</strong> → proteína hiperativa → proliferação independente de fatores de crescimento.",
+    topic: "ciclo"
+  },
+  {
+    q: "O que caracteriza uma neoplasia benigna?",
+    opts: [
+      "Crescimento rápido com capacidade de invasão de tecidos adjacentes",
+      "Células anaplásicas sem semelhança com tecido de origem e metástase frequente",
+      "Crescimento lento, bem delimitado por cápsula fibrosa, células diferenciadas, sem invasão nem metástase",
+      "Surgimento exclusivo em áreas expostas à radiação ultravioleta"
+    ],
+    correct: 2,
+    exp: "Neoplasias benignas têm crescimento organizado e lento, são <strong>bem delimitadas por cápsula fibrosa</strong>, com células bem diferenciadas semelhantes ao tecido original. Não invadem tecidos vizinhos e não metastatizam. Raramente fatais. Ex: lipoma, nevo benigno, fibroma.",
+    topic: "neoplasias"
+  },
+  {
+    q: "O que caracteriza uma neoplasia maligna?",
+    opts: [
+      "Crescimento lento e encapsulado com células bem diferenciadas",
+      "Crescimento rápido e invasivo, com células anaplásicas e capacidade de metástase através de vasos sanguíneos ou linfáticos",
+      "Ausência de vascularização própria e dependência exclusiva de difusão de nutrientes",
+      "Resposta obrigatória a tratamento com quimioterapia convencional"
+    ],
+    correct: 1,
+    exp: "Neoplasias malignas (cânceres) apresentam: crescimento rápido e autônomo, células <strong>anaplásicas</strong> (perda de diferenciação), invasão local destrutiva de tecidos e <strong>capacidade de metástase</strong> (disseminação a distância via corrente sanguínea ou linfática).",
+    topic: "neoplasias"
+  },
+  {
+    q: "Qual a principal diferença comportamental entre CBC, CEC e melanoma?",
+    opts: [
+      "CBC é de origem melanocítica; CEC é de células basais; melanoma é de células escamosas",
+      "Todos têm o mesmo potencial metastático, diferindo apenas na localização anatômica",
+      "O CBC raramente metastatiza; o CEC pode causar metástases regionais; o melanoma tem alto potencial metastático precoce",
+      "CBC e CEC são metastaticamente equivalentes; apenas o melanoma é benigno"
+    ],
+    correct: 2,
+    exp: "<strong>CBC</strong>: metástase rarísssima (<0,1%) — mais inerte. <strong>CEC</strong>: metástase linfonodal em 2–5% dos casos (maior em lábio, ouvido, imunossuprimidos). <strong>Melanoma</strong>: alto potencial de metástase hematogênica e linfática precoce — daí sua letalidade desproporcionalmente alta apesar de ser menos frequente.",
+    topic: "neoplasias"
+  },
+  {
+    q: "Quais são os principais fatores intrínsecos para o desenvolvimento do câncer?",
+    opts: [
+      "Tabagismo, obesidade, sedentarismo e dieta hiperlipídica",
+      "Exposição à radiação UV, agentes químicos industriais e infecções virais",
+      "Genética hereditária (BRCA, TP53), idade, influência hormonal e imunocompetência",
+      "Nível socioeconômico, estresse crônico e privação de sono"
+    ],
+    correct: 2,
+    exp: "Fatores intrínsecos (endógenos) incluem: <strong>Hereditariedade</strong> (5–10% hereditários; BRCA1/2, TP53), <strong>Idade</strong> (acúmulo de mutações somáticas), <strong>Hormônios</strong> (estrogênio → mama, endométrio) e <strong>Imunocompetência</strong> (imunossupressão facilita escape tumoral).",
+    topic: "fatores"
+  },
+  {
+    q: "Quais são os principais fatores extrínsecos para o desenvolvimento do câncer de pele?",
+    opts: [
+      "Dieta hipossódica, sedentarismo e privação de vitamina D",
+      "Radiação UV, tabagismo, agentes químicos (amianto, benzeno), vírus oncogênicos e estilo de vida",
+      "Mutações em BRCA2 e CDKN2A exclusivamente",
+      "Temperatura ambiente elevada e exposição a campos eletromagnéticos"
+    ],
+    correct: 1,
+    exp: "80–90% dos cânceres têm origem ambiental evitável. Para pele: <strong>UV</strong> (principal — dímeros de pirimidina), <strong>tabaco</strong> (1ª causa isolada de câncer em geral), <strong>HPV</strong> (CEC genital e orofaríngeo), <strong>imunossupressão</strong> e estilo de vida.",
+    topic: "fatores"
+  },
+  {
+    q: "Como a radiação ultravioleta induz câncer de pele?",
+    opts: [
+      "Ativando oncogenes por via hormonal e aumentando a produção de melanina mutagênica",
+      "Destruindo fisicamente as células da derme, causando fibrose cicatricial oncogênica",
+      "Provocando formação de dímeros de pirimidina (principalmente ciclobutano-pirimidina) que distorcem o DNA e causam mutações características C→T",
+      "Induzindo apoptose massiva que desencadeia regeneração celular descontrolada"
+    ],
+    correct: 2,
+    exp: "O UVB (<290–320nm) provoca <strong>dímeros de pirimidina</strong> (CPDs e 6-4PPs) — ligações covalentes entre bases adjacentes de timina/citosina. Esses dímeros bloqueiam a replicação e causam mutações características <strong>C→T e CC→TT</strong>. Se não reparados pelo sistema NER → mutação em oncogenes (BRAF) e supressores (TP53).",
+    topic: "fatores"
+  },
+  {
+    q: "Qual é a fisiopatologia do carcinoma basocelular?",
+    opts: [
+      "Origina-se dos melanócitos da junção dermoepidérmica por ativação da via MAPK",
+      "Origina-se das células escamosas por mutações em genes de reparo MMR",
+      "Origina-se dos queratinócitos da camada basal, frequentemente associado a mutações na via de sinalização Hedgehog (gene PTCH), com agressividade predominantemente local",
+      "Origina-se de células de Merkel com mutações em RB1 e alto potencial metastático"
+    ],
+    correct: 2,
+    exp: "O CBC origina-se dos <strong>queratinócitos da camada basal</strong>. A via mais frequentemente alterada é a <strong>Hedgehog</strong>: mutação inativadora de PTCH1 (supressor de tumor) → ativação constitutiva de Smoothened → proliferação descontrolada. Agressividade local predominante, metástase <0,1%.",
+    topic: "fisiopato"
+  },
+  {
+    q: "Qual é a fisiopatologia do carcinoma espinocelular?",
+    opts: [
+      "Origina-se dos melanócitos, associado a mutações BRAF e NRAS",
+      "Origina-se das células do epitélio escamoso, associado à radiação UV cumulativa e possível HPV, podendo metastatizar",
+      "Origina-se dos fibroblastos dérmicos por exposição crônica a carcinógenos químicos",
+      "Origina-se dos queratinócitos basais via via Hedgehog, sem precursores identificados"
+    ],
+    correct: 1,
+    exp: "O CEC origina-se das <strong>células escamosas do epitélio</strong> (camada espinhosa). Gênese: <strong>UV cumulativo</strong> → mutações em p53 em queratoses actínicas (precursoras) → progressão para CEC invasivo. HPV (tipos 16, 18) está envolvido em CEC de região genital e orofaríngea.",
+    topic: "fisiopato"
+  },
+  {
+    q: "Qual é a fisiopatologia do melanoma?",
+    opts: [
+      "Origina-se dos queratinócitos basais via via Wnt, sem mutações em BRAF",
+      "Origina-se dos melanócitos, frequentemente com mutações em BRAF V600E ou NRAS (via MAPK) e inativação de CDKN2A, com alto potencial metastático",
+      "Origina-se das células dendríticas dérmicas com ativação da via Notch",
+      "Origina-se de nevos displásicos exclusivamente pela exposição à luz visível"
+    ],
+    correct: 1,
+    exp: "O melanoma deriva da transformação maligna dos <strong>melanócitos</strong>. Mutações mais frequentes: <strong>BRAF V600E</strong> (~50%), NRAS (~20%) → hiperativação da via MAPK → proliferação. Inativação de <strong>CDKN2A</strong> (p16, p14ARF) remove controles do ciclo. Alto potencial de metástase linfática e hematogênica precoce.",
+    topic: "fisiopato"
+  },
+  {
+    q: "Quais são os métodos diagnósticos do câncer de pele?",
+    opts: [
+      "Apenas biópsia e análise de marcadores tumorais séricos são necessários",
+      "Exame clínico (ABCDE), dermatoscopia, biópsia com histopatologia, pesquisa de linfonodo sentinela e exames de imagem para estadiamento",
+      "TC de tórax e PET-CT são os métodos de primeira linha para todos os casos",
+      "Termografia cutânea e biópsia líquida são os únicos métodos diagnósticos recomendados"
+    ],
+    correct: 1,
+    exp: "O diagnóstico integra: <strong>1) Inspeção visual (ABCDE)</strong>, <strong>2) Dermatoscopia</strong> (aumenta acurácia), <strong>3) Biópsia + histopatologia</strong> (diagnóstico definitivo + Breslow para melanoma), <strong>4) Sentinela</strong> (se Breslow >1mm), <strong>5) TC/PET-CT</strong> (estadiamento em casos avançados).",
+    topic: "diagnostico"
+  },
+  {
+    q: "Como o Índice de Breslow influencia as margens cirúrgicas?",
+    opts: [
+      "Breslow >2mm indica somente 0,5cm de margem para preservar tecido cosmético",
+      "As margens são fixas em 1cm independentemente da profundidade de Breslow",
+      "Breslow ≤1mm → margem 1cm; 1–2mm → >1cm; >2mm → 2–3cm de margem",
+      "O Breslow determina apenas o uso de quimioterapia adjuvante, não as margens cirúrgicas"
+    ],
+    correct: 2,
+    exp: "O Breslow define diretamente a extensão da margem de segurança: <strong>≤1mm → 1cm</strong>; <strong>1–2mm → >1cm</strong>; <strong>>2mm → 2–3cm</strong>. Quanto mais profunda a invasão, maior a infiltração lateral 'invisível', exigindo margem proporcional ao risco de recidiva.",
+    topic: "diagnostico"
+  },
+  {
+    q: "Quando está indicada a biópsia do linfonodo sentinela no melanoma?",
+    opts: [
+      "Em todos os casos de melanoma, independentemente da espessura",
+      "Apenas em melanomas com ulceração macroscópica visível",
+      "Em melanomas com espessura de Breslow maior que 1 mm",
+      "Somente após confirmação de metástase à distância por TC"
+    ],
+    correct: 2,
+    exp: "A pesquisa do linfonodo sentinela está indicada em melanomas com <strong>Breslow >1mm</strong> (ou entre 0,75–1mm com fatores de alto risco: ulceração, mitoses, regressão). Identifica metástase linfonodal subclínica e estadifica a doença regionalmente.",
+    topic: "diagnostico"
+  },
+  {
+    q: "Qual é a epidemiologia do câncer de pele não melanoma no Brasil?",
+    opts: [
+      "Representa menos de 5% dos tumores malignos, predominante em jovens negros",
+      "É o câncer mais comum no Brasil, representando ~26% dos tumores malignos, com CBC (~70%) e CEC (~25%)",
+      "O CEC é mais frequente que o CBC no Brasil pela alta prevalência de HPV",
+      "A incidência é maior na região Norte pelo maior calor e umidade"
+    ],
+    correct: 1,
+    exp: "O câncer de pele não melanoma é o <strong>mais comum no Brasil (~26% dos tumores malignos)</strong>. CBC representa ~70% dos diagnósticos, CEC ~25%. Mais comum em adultos >40 anos, fototipos I e II. A incidência é maior em regiões de maior altitude e irradiação solar.",
+    topic: "epidemio"
+  },
+  {
+    q: "Por que o melanoma é considerado o tipo mais grave de câncer de pele?",
+    opts: [
+      "Porque é o tipo mais comum e afeta principalmente crianças e jovens",
+      "Porque é resistente a todos os tratamentos cirúrgicos disponíveis",
+      "Porque possui alto potencial de metástase precoce via correntes sanguínea e linfática, com alta letalidade quando diagnosticado em estágio avançado",
+      "Porque origina-se da derme profunda, impossibilitando a detecção clínica precoce"
+    ],
+    correct: 2,
+    exp: "O melanoma representa apenas ~4% dos cânceres cutâneos, mas é responsável pela maioria das mortes. Sua gravidade se deve ao <strong>alto potencial metastático precoce</strong> por vias hematogênica e linfática. O diagnóstico tardio (lesão espessa, metástases) reduz drasticamente a sobrevida. Breslow <1mm: sobrevida >95%; metástase a distância: <25%.",
+    topic: "epidemio"
+  },
+  {
+    q: "Qual é o objetivo do acompanhamento (follow-up) após tratamento oncológico?",
+    opts: [
+      "Apenas monitorar os efeitos adversos da quimioterapia nos primeiros 30 dias",
+      "Detectar precocemente recidivas, monitorar complicações tardias e promover reabilitação do paciente",
+      "Prescrever sistematicamente imunoterapia de manutenção a todos os pacientes",
+      "Avaliar resposta cosmética após cirurgia reconstrutora"
+    ],
+    correct: 1,
+    exp: "O follow-up tem como objetivos: <strong>1) Detecção precoce de recidiva</strong> (risco maior nos primeiros 2–3 anos), <strong>2) Vigilância de complicações tardias</strong> (cardiotoxicidade, hipotireoidismo, 2ª neoplasia), <strong>3) Reabilitação física e psicossocial</strong> e <strong>4) Promoção de hábitos saudáveis</strong>.",
+    topic: "followup"
+  },
+  {
+    q: "Quais são os principais componentes do seguimento clínico após tratamento do câncer?",
+    opts: [
+      "Apenas exames de imagem trimestrais com TC e PET-CT",
+      "Somente dosagem de marcadores tumorais mensais sem necessidade de exame físico",
+      "Anamnese, exame físico, exames laboratoriais e marcadores tumorais, exames de imagem conforme protocolo, e vigilância de complicações tardias",
+      "Restrição a consultas anuais com oncologista sem exames complementares"
+    ],
+    correct: 2,
+    exp: "O seguimento integra: <strong>Anamnese + exame físico</strong> (base insubstituível), <strong>Exames laboratoriais</strong> (hemograma, função orgânica), <strong>Marcadores tumorais</strong> (PSA, CEA, CA-125 conforme tumor), <strong>Imagem</strong> (TC/PET-CT por protocolo), <strong>Vigilância de 2ª neoplasia</strong> e <strong>Suporte multidisciplinar</strong>.",
+    topic: "followup"
+  }
+];
+
+// ============================================================
+// DATA — FLASHCARDS
+// ============================================================
+const flashcardData = [
+  {front:"O que é o sistema ABCDE?",back:"Guia de triagem para melanoma: Assimetria, Bordas irregulares, Cor variada, Diâmetro >6mm, Evolução/Elevação"},
+  {front:"Vasos arboriformes → qual tumor?",back:"Carcinoma Basocelular (CBC) — hallmark dermatoscópico"},
+  {front:"Índice de Breslow — o que mede?",back:"Profundidade de invasão do melanoma em milímetros. Determina margens cirúrgicas e indicação de sentinela"},
+  {front:"CBC: via molecular",back:"Via Hedgehog — mutação inativadora de PTCH1 → ativação constitutiva de Smoothened"},
+  {front:"Melanoma: mutação mais comum",back:"BRAF V600E (~50% dos casos) → via MAPK hiperativa"},
+  {front:"CEC: precursor lesional",back:"Queratose actínica (dano UV cumulativo → displasia → CEC invasivo)"},
+  {front:"Cirurgia de Mohs — qual vantagem?",back:"Avaliação de 100% das margens em tempo real → menor recorrência + maior preservação de tecido"},
+  {front:"Breslow >1mm → qual conduta?",back:"Biópsia do linfonodo sentinela (pesquisa de metástase linfonodal)"},
+  {front:"p53 — como decide entre reparo e apoptose?",back:"Alta afinidade pelos promotores de reparo (p21, GADD45) vs baixa afinidade pelos pró-apoptóticos (BAX, PUMA). Dano grave → p53 acumula → apoptose"},
+  {front:"Fototipo II características",back:"Pele clara, queima facilmente, bronzeia pouco. Alto risco para cânceres de pele por déficit de melanina"},
+  {front:"Crossing-over: quando e onde?",back:"Prófase I da meiose. Troca de segmentos entre cromossomos homólogos → gera diversidade genética"},
+  {front:"Câncer de pele mais comum no Brasil",back:"Carcinoma Basocelular (~70% dos cânceres de pele). Não melanoma = ~26% de todos os tumores malignos no Brasil"},
+  {front:"Melanoma: tipo de UV mais relacionado",back:"UV intermitente com queimaduras agudas (vs UV crônico → CEC)"},
+  {front:"Biópsia excisional vs incisional no melanoma",back:"Excisional obrigatória → permite Breslow completo. Incisional pode subestimar profundidade → margem inadequada"},
+  {front:"Linfonodo sentinela: quando indicado?",back:"Melanoma com Breslow >1mm (ou 0,75–1mm com fatores de risco: ulceração, mitoses)"},
+  {front:"G1/S checkpoint — proteínas envolvidas",back:"p53 → ativa p21 (CKI) → inibe CDK4/6-Ciclina D → pRb permanece hipofosforilado → bloqueia E2F → parada em G1"},
+  {front:"Queratose actínica → sinal de alarme",back:"Lesão pré-cancerígena = 'luz amarela'. Displasia de queratinócito que pode evoluir para CEC invasivo se não tratada"},
+  {front:"Estádio T no TNM",back:"T = tamanho/extensão do tumor primário. N = linfonodos. M = metástases"},
+  {front:"HPV — como causa câncer?",back:"E6 → degrada p53. E7 → inibe pRb. Resultado: perda dos controles do ciclo celular → proliferação descontrolada"},
+  {front:"Follow-up — quando é mais intensivo?",back:"Nos primeiros 2–3 anos pós-tratamento (maior risco de recidiva). Frequência diminui gradualmente com o tempo"}
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  theme: 'dark',
+  quizAnswers: {}, // id: {answered, correct}
+  marked: { done: new Set(), star: new Set() },
+  flashcardsFlipped: new Set(),
+  allExpanded: false,
+  reviewOpen: false,
+  sectionsViewed: new Set()
+};
+
+// ============================================================
+// RENDER QUIZ
+// ============================================================
+function renderQuiz() {
+  const container = document.getElementById('quiz-list');
+  container.innerHTML = '';
+  quizData.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-container';
+    div.id = `q${i}`;
+    div.innerHTML = `
+      <div class="quiz-header">
+        <span class="quiz-num">${String(i+1).padStart(2,'0')}</span>
+        <div class="quiz-question">${item.q}</div>
+      </div>
+      <div class="quiz-body">
+        <div class="quiz-options">
+          ${item.opts.map((opt,j) => `
+            <div class="quiz-option" onclick="selectAnswer(${i},${j})" id="qo${i}-${j}">
+              <span class="opt-letter">${'ABCD'[j]}</span>
+              <span>${opt}</span>
+            </div>
+          `).join('')}
+        </div>
+        <div class="quiz-explanation" id="qexp${i}">
+          <div class="exp-label">💡 Explicação</div>
+          ${item.exp}
+        </div>
+        <div class="quiz-actions">
+          <button class="btn btn-outline" onclick="showAnswer(${i})">👁 Mostrar resposta</button>
+          <button class="btn btn-outline" onclick="resetQuiz(${i})">↺ Refazer</button>
+          <div class="quiz-result" id="qres${i}"></div>
+        </div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+  updateBadge();
+}
+
+function selectAnswer(qIdx, optIdx) {
+  if (state.quizAnswers[qIdx]) return; // already answered
+  const item = quizData[qIdx];
+  state.quizAnswers[qIdx] = {answered: true, correct: optIdx === item.correct};
+
+  // Style options
+  for(let j=0;j<item.opts.length;j++){
+    const el = document.getElementById(`qo${qIdx}-${j}`);
+    el.classList.add('disabled');
+    if(j === item.correct) el.classList.add('correct');
+    else if(j === optIdx) el.classList.add('wrong');
+  }
+
+  // Show explanation
+  document.getElementById(`qexp${qIdx}`).classList.add('show');
+
+  // Show result
+  const res = document.getElementById(`qres${qIdx}`);
+  res.classList.add('show');
+  if(optIdx === item.correct){
+    res.classList.add('pass');
+    res.innerHTML = '✓ Correto!';
+  } else {
+    res.classList.add('fail');
+    res.innerHTML = `✗ Incorreto — resposta: ${'ABCD'[item.correct]}`;
+  }
+
+  updateStats();
+}
+
+function showAnswer(qIdx) {
+  const item = quizData[qIdx];
+  if(!state.quizAnswers[qIdx]) {
+    state.quizAnswers[qIdx] = {answered: true, correct: false, revealed: true};
+    for(let j=0;j<item.opts.length;j++){
+      const el = document.getElementById(`qo${qIdx}-${j}`);
+      el.classList.add('disabled');
+      if(j === item.correct) el.classList.add('correct');
+    }
+    document.getElementById(`qexp${qIdx}`).classList.add('show');
+    const res = document.getElementById(`qres${qIdx}`);
+    res.classList.add('show','fail');
+    res.innerHTML = `Resposta revelada: ${'ABCD'[item.correct]}`;
+    updateStats();
+  }
+}
+
+function resetQuiz(qIdx) {
+  delete state.quizAnswers[qIdx];
+  const item = quizData[qIdx];
+  for(let j=0;j<item.opts.length;j++){
+    const el = document.getElementById(`qo${qIdx}-${j}`);
+    el.classList.remove('disabled','correct','wrong');
+  }
+  document.getElementById(`qexp${qIdx}`).classList.remove('show');
+  const res = document.getElementById(`qres${qIdx}`);
+  res.classList.remove('show','pass','fail');
+  res.innerHTML = '';
+  updateStats();
+}
+
+function resetAllQuizzes() {
+  state.quizAnswers = {};
+  renderQuiz();
+  updateStats();
+}
+
+function updateStats() {
+  const answered = Object.values(state.quizAnswers).filter(a=>a.answered && !a.revealed);
+  const correct = answered.filter(a=>a.correct).length;
+  const wrong = answered.filter(a=>!a.correct).length;
+  const total = answered.length;
+  document.getElementById('stat-correct').textContent = correct;
+  document.getElementById('stat-wrong').textContent = wrong;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-pct').textContent = total > 0 ? Math.round(correct/total*100)+'%' : '—';
+  document.getElementById('score-display').textContent = `${correct} / ${total} ✓`;
+  updateBadge();
+  updateProgress();
+}
+
+function updateBadge() {
+  const total = Object.keys(state.quizAnswers).length;
+  document.getElementById('badge-q').textContent = `${total}/40`;
+}
+
+// ============================================================
+// RENDER FLASHCARDS
+// ============================================================
+function renderFlashcards(data) {
+  const grid = document.getElementById('flashcard-grid');
+  grid.innerHTML = '';
+  data.forEach((fc, i) => {
+    const div = document.createElement('div');
+    div.className = 'flashcard' + (state.flashcardsFlipped.has(i) ? ' flipped' : '');
+    div.onclick = () => toggleFlashcard(div, i);
+    div.innerHTML = `
+      <div class="flashcard-inner">
+        <div class="flashcard-front">
+          <div class="fc-tag">Conceito ${i+1}</div>
+          <div class="fc-question">${fc.front}</div>
+          <div class="fc-flip-hint">Clique para ver →</div>
+        </div>
+        <div class="flashcard-back">
+          <div class="fc-tag">Resposta</div>
+          <div class="fc-answer">${fc.back}</div>
+        </div>
+      </div>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+function toggleFlashcard(el, i) {
+  el.classList.toggle('flipped');
+  if(el.classList.contains('flipped')) state.flashcardsFlipped.add(i);
+  else state.flashcardsFlipped.delete(i);
+}
+
+function shuffleFlashcards() {
+  const shuffled = [...flashcardData].sort(()=>Math.random()-.5);
+  state.flashcardsFlipped.clear();
+  renderFlashcards(shuffled);
+}
+
+function flipAllCards() {
+  const cards = document.querySelectorAll('.flashcard');
+  const anyFlipped = Array.from(cards).some(c=>c.classList.contains('flipped'));
+  cards.forEach((c,i) => {
+    if(anyFlipped) { c.classList.remove('flipped'); state.flashcardsFlipped.delete(i); }
+    else { c.classList.add('flipped'); state.flashcardsFlipped.add(i); }
+  });
+}
+
+function resetFlashcards() {
+  state.flashcardsFlipped.clear();
+  renderFlashcards(flashcardData);
+}
+
+// ============================================================
+// EXPANDABLE
+// ============================================================
+function toggleExpand(trigger) {
+  const content = trigger.nextElementSibling;
+  trigger.classList.toggle('open');
+  content.classList.toggle('open');
+}
+
+// ============================================================
+// SIDEBAR
+// ============================================================
+function toggleSidebarSection(el) {
+  el.classList.toggle('open');
+  const links = el.nextElementSibling;
+  links.classList.toggle('open');
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+function scrollTo(id) {
+  const el = document.getElementById(id);
+  if(el){
+    el.scrollIntoView({behavior:'smooth',block:'start'});
+    state.sectionsViewed.add(id);
+    updateStatsBar();
+  }
+}
+
+// ============================================================
+// MARK DONE / STAR
+// ============================================================
+function markDone(btn, id) {
+  if(state.marked.done.has(id)){
+    state.marked.done.delete(id);
+    btn.classList.remove('marked-done');
+    btn.textContent = '✓ Concluído';
+  } else {
+    state.marked.done.add(id);
+    btn.classList.add('marked-done');
+    btn.textContent = '✓ Concluído ✓';
+    // Also update sidebar
+    addSidebarMark(id, 'done');
+  }
+  document.getElementById('hero-completed').textContent = state.marked.done.size;
+  updateStatsBar();
+  updateProgress();
+}
+
+function markStar(btn, id) {
+  if(state.marked.star.has(id)){
+    state.marked.star.delete(id);
+    btn.classList.remove('marked-star');
+    btn.textContent = '★ Importante';
+  } else {
+    state.marked.star.add(id);
+    btn.classList.add('marked-star');
+    btn.textContent = '★ Marcado!';
+  }
+  updateStatsBar();
+}
+
+function addSidebarMark(id, type) {
+  // visual only — find link in sidebar
+}
+
+function updateStatsBar() {
+  document.getElementById('sb-seen').textContent = state.sectionsViewed.size;
+  document.getElementById('sb-done').textContent = state.marked.done.size;
+  document.getElementById('sb-star').textContent = state.marked.star.size;
+}
+
+// ============================================================
+// PROGRESS
+// ============================================================
+function updateProgress() {
+  const total = 15; // rough total trackable items
+  const done = state.marked.done.size;
+  const pct = Math.min(100, Math.round((done / total) * 100));
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+// ============================================================
+// SEARCH
+// ============================================================
+document.getElementById('search-input').addEventListener('input', function(){
+  const q = this.value.toLowerCase().trim();
+  if(!q) {
+    // Remove highlights
+    document.querySelectorAll('.highlight').forEach(el=>{
+      el.outerHTML = el.textContent;
+    });
+    return;
+  }
+  // Simple: scroll to first match
+});
+document.getElementById('search-input').addEventListener('keydown', function(e){
+  if(e.key === 'Escape') this.value = '';
+});
+
+// ============================================================
+// THEME
+// ============================================================
+function toggleTheme() {
+  document.body.classList.toggle('light-mode');
+  state.theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+  document.getElementById('theme-btn').textContent = state.theme === 'dark' ? '◐' : '◑';
+}
+
+// ============================================================
+// TOGGLE ALL
+// ============================================================
+function toggleAll() {
+  state.allExpanded = !state.allExpanded;
+  document.querySelectorAll('.expand-trigger').forEach(t=>{
+    const content = t.nextElementSibling;
+    if(state.allExpanded){
+      t.classList.add('open');
+      content.classList.add('open');
+    } else {
+      t.classList.remove('open');
+      content.classList.remove('open');
+    }
+  });
+}
+
+// ============================================================
+// QUICK REVIEW
+// ============================================================
+const reviewItems = [
+  {icon:'🔴',title:'Sistema ABCDE',body:'A-ssimetria, B-ordas, C-or variada, D-iâmetro >6mm, E-volução. Triagem para melanoma.'},
+  {icon:'🟡',title:'Vasos arboriformes',body:'Telangiectasias ramificadas = hallmark do CBC nodular à dermatoscopia.'},
+  {icon:'🟢',title:'Índice de Breslow',body:'≤1mm→1cm margem; 1-2mm→>1cm; >2mm→2-3cm. Sentinela se >1mm.'},
+  {icon:'🔵',title:'CBC vs CEC vs Melanoma',body:'CBC: perláceo, raramente metastatiza. CEC: áspero, pode metastatizar. Melanoma: ABCDE+, alto potencial metastático.'},
+  {icon:'🟣',title:'p53',body:'Guardiã do genoma. Alta afinidade → reparo (p21). Baixa afinidade → apoptose (BAX/PUMA). Mutada em ~50% dos cânceres.'},
+  {icon:'🔴',title:'Mitose vs Meiose',body:'Mitose: 1div → 2n idênticas (crescimento). Meiose: 2div → 1n únicas (gametas). Crossing-over: Prófase I.'},
+  {icon:'🟡',title:'Fatores de risco',body:'UV→câncer pele; Tabaco→pulmão (90%); HPV→colo uterino; HBV/HCV→hepatocarcinoma.'},
+  {icon:'🟢',title:'Biópsia no melanoma',body:'Sempre EXCISIONAL. Incisional subestima Breslow → margem inadequada.'},
+  {icon:'🔵',title:'Epidemiologia BR',body:'Não melanoma = câncer mais comum (26%). CBC ~70%. Melanoma ~4% mas o mais letal. Maior incidência: Sul (melanoma).'},
+  {icon:'🟣',title:'Via Hedgehog (CBC)',body:'PTCH1 mutado → Smoothened ativo → GLI → proliferação. Alvo do Vismodegib.'},
+  {icon:'🔴',title:'Follow-up',body:'Mais intensivo nos primeiros 2-3 anos. Vigilância de recidiva, toxicidades tardias e 2ª neoplasia.'},
+  {icon:'🟡',title:'Cirurgia de Mohs',body:'100% das margens avaliadas em tempo real. Ideal para CBC de face ou alto risco.'},
+];
+
+function toggleReview() {
+  state.reviewOpen = !state.reviewOpen;
+  const overlay = document.getElementById('review-overlay');
+  overlay.classList.toggle('active', state.reviewOpen);
+  if(state.reviewOpen && !document.getElementById('review-content').children.length){
+    renderReview();
+  }
+}
+
+function renderReview() {
+  const c = document.getElementById('review-content');
+  c.innerHTML = reviewItems.map(item=>`
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;display:flex;gap:12px;align-items:flex-start">
+      <span style="font-size:1.3rem">${item.icon}</span>
+      <div>
+        <div style="font-family:var(--font-head);font-weight:700;color:var(--text-primary);margin-bottom:4px">${item.title}</div>
+        <div style="font-size:.85rem;color:var(--text-secondary);line-height:1.5">${item.body}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// INTERSECTION OBSERVER (active sidebar link)
+// ============================================================
+function setupObserver() {
+  const sections = document.querySelectorAll('[id]');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) {
+        state.sectionsViewed.add(entry.target.id);
+        updateStatsBar();
+      }
+    });
+  }, {threshold:0.1});
+  sections.forEach(s => observer.observe(s));
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  renderQuiz();
+  renderFlashcards(flashcardData);
+  setupObserver();
+  // Open all sidebar sections by default
+  document.querySelectorAll('.sidebar-section-title').forEach(el=>{
+    el.classList.add('open');
+    if(el.nextElementSibling) el.nextElementSibling.classList.add('open');
+  });
+});
+</script>
+</body>
+</html>
